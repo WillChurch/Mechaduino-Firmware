@@ -63,7 +63,7 @@
 
 //----Current Parameters-----
 
-volatile float Ts = 0.0003333333;
+const float Ts = 0.0003333333;
 
 volatile float pKp = 30.75;
 volatile float pKi = 0.50;
@@ -79,10 +79,10 @@ const PROGMEM float force_lookup[] = {
 
 const int spr = 200; //  200 steps per revolution
 const float aps = 360.0 / spr; // angle per step
-int cpr = 16384; //counts per rev
+const int cpr = 16384; //counts per rev
 
 int dir = 1;		//initialize stepping mode variables
-int step_state = 1;		
+int step_state = 1;
 
 long angle = 0; //holds processed angle value
 
@@ -111,18 +111,18 @@ int val2 = 0;
 //////////////////////////////////////
 //////////////////PINS////////////////
 //////////////////////////////////////
-int IN_4 = 6;//11 - 1;
-int IN_3 = 5;//12 - 1;
-int VREF_2 = 4;//13 - 1;
-int VREF_1 = 9;//3;//8-1;
-int IN_2 = 7;//10 - 1;
-int IN_1 = 8;//9 - 1;
-int pulse = 13;//5;
+const int IN_4 = 6;//11 - 1;
+const int IN_3 = 5;//12 - 1;
+const int VREF_2 = 4;//13 - 1;
+const int VREF_1 = 9;//3;//8-1;
+const int IN_2 = 7;//10 - 1;
+const int IN_1 = 8;//9 - 1;
+const int pulse = 13;//5;
 const int ledPin = 13;//5; //LED connected to digital pin 13
 const int chipSelectPin = A2;//5;//6; //output to chip select
 
-int step_pin  = 1;
-int dir_pin = 0;//2;
+const int step_pin  = 1;
+const int dir_pin = 0;//2;
 
 //int sine_out = //3;				// pins for debugging waveforms
 //int encoder_out = //4;
@@ -1088,10 +1088,10 @@ void parameterEditp(){
         SerialUSB.println(pKd,DEC);
         SerialUSB.println("q ----- quit");
         SerialUSB.println();
-        
+
         while (SerialUSB.available() == 0)  {}
         char inChar3 = (char)SerialUSB.read();
-        
+
         switch (inChar3) {
             case 'p':
               {
@@ -1107,7 +1107,7 @@ void parameterEditp(){
               pKi = SerialUSB.parseFloat();
               }
               break;
-            case 'd':  
+            case 'd':
               {
               SerialUSB.println("pKd = ?");
               while (SerialUSB.available() == 0)  {}
@@ -1132,10 +1132,10 @@ void parameterEditv(){
   SerialUSB.println(vKd,DEC);
   SerialUSB.println("q ----- quit");
   SerialUSB.println();
-  
+
   while (SerialUSB.available() == 0)  {}
   char inChar4 = (char)SerialUSB.read();
-  
+
   switch (inChar4) {
       case 'p':
         {
@@ -1151,7 +1151,7 @@ void parameterEditv(){
         vKi = SerialUSB.parseFloat();
         }
         break;
-      case 'd':  
+      case 'd':
         {
         SerialUSB.println("vKd = ?");
         while (SerialUSB.available() == 0)  {}
@@ -1160,7 +1160,7 @@ void parameterEditv(){
         break;
       default:
       {}
-        break;             
+        break;
   }
 }
 
@@ -1173,7 +1173,7 @@ void parameterEdito(){
 
         while (SerialUSB.available() == 0)  {}
         char inChar3 = (char)SerialUSB.read();
-        
+
         switch (inChar3) {
             case 'p':
               SerialUSB.println("PA = ?");
