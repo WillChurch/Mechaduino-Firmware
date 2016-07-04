@@ -195,7 +195,43 @@ int val = 0;
 int aout = 0;
 
 
+int readEncoder()           //////////////////////////////////////////////////////   READENCODER   ////////////////////////////
+{
+  long angleTemp;
+  digitalWrite(chipSelectPin, LOW);
 
+  //angle = SPI.transfer(0xFF);
+  byte b1 = SPI.transfer(0xFF);
+  byte b2 = SPI.transfer(0xFF);
+
+
+  angleTemp = (((b1 << 8) | b2) & 0B0011111111111111);
+  //  SerialUSB.println((angle & 0B0011111111111111)*0.02197265625);
+
+  digitalWrite(chipSelectPin, HIGH);
+  return angleTemp;
+}
+
+float lookup_sine(int m)        /////////////////////////////////////////////////  LOOKUP_SINE   /////////////////////////////
+{
+  float b_out;
+
+  m = (0.01 * (((m % 62832) + 62832) % 62832)) + 0.5; //+0.5 for rounding
+
+  //SerialUSB.println(m);
+
+  if (m > 314) {
+    m = m - 314;
+    b_out = -pgm_read_float_near(sine_lookup + m);
+
+  }
+  else
+  {
+    b_out = pgm_read_float_near(sine_lookup + m);
+  }
+
+  return b_out;
+}
 
 
 //////////////////////////////////////
@@ -696,26 +732,6 @@ void output(float theta, int effort) {                    //////////////////////
 
 
 
-int readEncoder()           //////////////////////////////////////////////////////   READENCODER   ////////////////////////////
-{
-  long angleTemp;
-  digitalWrite(chipSelectPin, LOW);
-
-  //angle = SPI.transfer(0xFF);
-  byte b1 = SPI.transfer(0xFF);
-  byte b2 = SPI.transfer(0xFF);
-
-
-  angleTemp = (((b1 << 8) | b2) & 0B0011111111111111);
-  //  SerialUSB.println((angle & 0B0011111111111111)*0.02197265625);
-
-  digitalWrite(chipSelectPin, HIGH);
-  return angleTemp;
-
-
-
-
-}
 
 
 
@@ -810,29 +826,6 @@ void readEncoderDiagnostics()           ////////////////////////////////////////
 
 
 }
-
-
-float lookup_sine(int m)        /////////////////////////////////////////////////  LOOKUP_SINE   /////////////////////////////
-{
-  float b_out;
-
-  m = (0.01 * (((m % 62832) + 62832) % 62832)) + 0.5; //+0.5 for rounding
-
-  //SerialUSB.println(m);
-
-  if (m > 314) {
-    m = m - 314;
-    b_out = -pgm_read_float_near(sine_lookup + m);
-
-  }
-  else
-  {
-    b_out = pgm_read_float_near(sine_lookup + m);
-  }
-
-  return b_out;
-}
-
 
 
 float lookup_force(int m)        /////////////////////////////////////////////////  LOOKUP_force   /////////////////////////////

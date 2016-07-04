@@ -1,3 +1,6 @@
+# Platform io local files.
+.pioenvs
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
