@@ -238,20 +238,7 @@ float lookup_sine(int m)        ////////////////////////////////////////////////
 /////////////////SETUP/////////////////////
 //////////////////////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
-
 void setup() {
-
 
   setupPins();
   setupSPI();
@@ -263,66 +250,26 @@ void setup() {
 
   delay(500);
 
-
   //  enableTCInterrupts();     //start in closed loop mode
   //  mode = 'x';
   //
   //  Wire.begin(4);                // join i2c bus with address #8
   //  Wire.onReceive(receiveEvent); // register event
 
-
   //tp
 
   //pinMode(10, OUTPUT);
   //pinMode(11, OUTPUT);
   //pinMode(12, OUTPUT);
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //////////////////////////////////////
 /////////////////LOOP/////////////////////
 //////////////////////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void loop()
 {
   //mode = 'x';
-
 
   serialCheck();
 
@@ -351,13 +298,10 @@ void loop()
   //  analogWrite(A0,aout);
   //
 
-
   //  for (int i = 0; i < 1024; i++){
   //    analogWrite(A0,i);
   //    delay(2);
   //  }
-
-
 
   //  // tp dispenser:
   //  mode = 'x';
@@ -388,23 +332,7 @@ void loop()
   //    }
   //  }
 
-
-
   //    mode = 'x';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   //  r = 90;
   //  delay(2000);
@@ -422,30 +350,11 @@ void loop()
   //      delay(500);
   //    }
   //
-
-
-
-
 }
-
-
-
-
-
-
-
 
 //////////////////////////////////////
 /////////////////FUNCTIONS/////////////////////
 //////////////////////////////////////
-
-
-
-
-
-
-
-
 
 float lookup_angle(int n)
 {
@@ -455,10 +364,8 @@ float lookup_angle(int n)
 }
 
 
-
 void TC5_Handler()
 {
-
 
   //unedited/old:
   /*  // TcCount16* TC = (TcCount16*) TC3; // get timer struct
@@ -475,20 +382,12 @@ void TC5_Handler()
     // } */
 
 
-
   ///new
   // TcCount16* TC = (TcCount16*) TC3; // get timer struct
   if (TC5->COUNT16.INTFLAG.bit.OVF == 1) {  // A overflow caused the interrupt
 
-
-
-
-
-
-
     a = readEncoder();
     y = lookup_angle(a);
-
 
     if ((y - y_1) < -180.0) {
       wrap_count += 1;
@@ -500,13 +399,7 @@ void TC5_Handler()
 
     yw = (y + (360.0 * wrap_count));
 
-
-
-
-
-
     switch (mode) {
-
       case 'x':
         e = (r - yw);
 
@@ -514,29 +407,21 @@ void TC5_Handler()
         if (ITerm > 150) ITerm = 150;
         else if (ITerm < -150) ITerm = -150;
 
-
         u = ((pKp * e) + ITerm - (pKd * (yw - yw_1))); //ARDUINO library style
         //u = u+lookup_force(a)-20;
         //   u = u_1 + cA*e + cB*e_1 + cC*e_2;     //ppt linked in octave script
 
         //  u = 20*e;//
-
-
-
         break;
 
       case 'v':
-
-
         e = (r - ((yw - yw_1) * 500));//416.66667)); degrees per Tc to rpm
 
         ITerm += (vKi * e);
         if (ITerm > 200) ITerm = 200;
         else if (ITerm < -200) ITerm = -200;
 
-
         u = ((vKp * e) + ITerm - (vKd * (yw - yw_1)));//+ lookup_force(a)-20; //ARDUINO library style
-
         break;
 
       case 't':
@@ -548,10 +433,6 @@ void TC5_Handler()
         break;
     }
 
-
-
-
-
 //
 //    if (u > 0) {
 //      PA = 1.8;
@@ -562,18 +443,12 @@ void TC5_Handler()
 //
 //    y += PA;
 
-
-
     if (u > 0) {
       y+=PA;
     }
     else {
       y -=PA;
     }
-
-
-
-
 
     if (u > 200) {                          //saturation limits max current command
       u = 200;
@@ -582,10 +457,7 @@ void TC5_Handler()
       u = -200;
     }
 
-
-
     U = abs(u);       //+lookup_force((((a-4213)%16384)+16384)%16384)-6); ///p);//+i);
-
 
     if (abs(e) < 0.1) {
       digitalWrite(pulse, HIGH);
@@ -609,10 +481,7 @@ void TC5_Handler()
 
     TC5->COUNT16.INTFLAG.bit.OVF = 1;    // writing a one clears the flag ovf flag
   }
-
-
 }
-
 
 
 void print_angle()                ///////////////////////////////////       PRINT_ANGLE   /////////////////////////////////
@@ -651,24 +520,12 @@ void print_angle()                ///////////////////////////////////       PRIN
   SerialUSB.println(anglefloat, DEC);
 }
 
-
-
-
 void output(float theta, int effort) {                    //////////////////////////////////////////   OUTPUT   ///////////////////
   static int start = 0;
   static int finish = 0;
   static int intangle;
   static float floatangle;
   static int modangle;
-
-
-
-
-
-
-
-
-
 
 
   floatangle = (10000 * ( theta * 0.87266 + 2.3562) );//0.7854) );// 2.3562) );       //changed to 2.3 for NEMA23,NEMA17 dual..... opposite below
@@ -695,10 +552,6 @@ void output(float theta, int effort) {                    //////////////////////
 
   }
 
-
-
-
-
   floatangle = (10000 * (  theta * 0.8726646 + 0.7854) );//2.3562) );//0.7854) );
   //floatangle = (10000 * ( theta * 0.87266 + 2.3562) );
 
@@ -722,25 +575,13 @@ void output(float theta, int effort) {                    //////////////////////
     //   PORTB |= (B00001000);
 
   }
-
-
-
-
-
 }
-
-
-
-
-
 
 
 void readEncoderDiagnostics()           //////////////////////////////////////////////////////   READENCODERDIAGNOSTICS   ////////////////////////////
 {
   long angleTemp;
   digitalWrite(chipSelectPin, LOW);
-
-
 
   ///////////////////////////////////////////////READ DIAAGC (0x3FFC)
   SerialUSB.print("DIAAGC (0x3FFC)   ");
@@ -777,7 +618,6 @@ void readEncoderDiagnostics()           ////////////////////////////////////////
   SerialUSB.println(" ");
 
   digitalWrite(chipSelectPin, HIGH);
-
 
   delay(1);
 
@@ -816,15 +656,7 @@ void readEncoderDiagnostics()           ////////////////////////////////////////
 
   digitalWrite(chipSelectPin, HIGH);
 
-
   delay(1);
-
-
-
-
-
-
-
 }
 
 
@@ -850,7 +682,6 @@ float lookup_force(int m)        ///////////////////////////////////////////////
 }
 
 
-
 void stepInterrupt() {
   if (digitalRead(dir_pin))
   {
@@ -860,8 +691,6 @@ void stepInterrupt() {
   {
     step_count -= 1;
   }
-
-
 }
 
 
@@ -883,7 +712,6 @@ void setupPins() {
   attachInterrupt(1, stepInterrupt, RISING);
 
 
-
   analogWrite(VREF_2, 64);
   analogWrite(VREF_1, 64);
 
@@ -896,9 +724,6 @@ void setupPins() {
   // pinMode(clockPin, OUTPUT); // SCK
   pinMode(chipSelectPin, OUTPUT); // CSn -- has to toggle high and low to signal chip to start data transfer
   //  pinMode(inputPin, INPUT); // SDA
-
-
-
 }
 
 
@@ -915,8 +740,6 @@ void setupSPI() {
 
 
 void setupTCInterrupts() {
-
-
 
   // Enable GCLK for TC4 and TC5 (timer counter input clock)
   GCLK->CLKCTRL.reg = (uint16_t) (GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN_GCLK0 | GCLK_CLKCTRL_ID(GCM_TC4_TC5));
@@ -949,27 +772,19 @@ void setupTCInterrupts() {
   // Enable TC
   //  TC5->COUNT16.CTRLA.reg |= TC_CTRLA_ENABLE;
   //  WAIT_TC16_REGS_SYNC(TC5)
-
-
-
-
 }
 
 
 void enableTCInterrupts() {
-
   TC5->COUNT16.CTRLA.reg |= TC_CTRLA_ENABLE;    //Enable TC5
   WAIT_TC16_REGS_SYNC(TC5)                      //wait for sync
 }
 
 
 void disableTCInterrupts() {
-
-
   TC5->COUNT16.CTRLA.reg &= ~TC_CTRLA_ENABLE;   // Disable TC5
   WAIT_TC16_REGS_SYNC(TC5)                      // wait for sync
 }
-
 
 
 void commandW() {
@@ -1064,16 +879,9 @@ void commandW() {
           iStart = i;
           jStart = j;
         }
-
       }
     }
-
-
-
   }
-
-
-
 
   SerialUSB.println(" ");
   SerialUSB.println("newLookup:");
@@ -1084,7 +892,6 @@ void commandW() {
 
     if (ticks < -15000) {
       ticks += cpr;
-
     }
     else if (ticks > 15000) {
       ticks -= cpr;
@@ -1105,30 +912,17 @@ void commandW() {
         SerialUSB.print(" , ");
       }
     }
-
   }
   SerialUSB.println(" ");
-
-
-
-
-
-
-
 }
-
-
 
 
 void serialCheck() {
 
   if (SerialUSB.available()) {
-
     char inChar = (char)SerialUSB.read();
 
     switch (inChar) {
-
-
       case 'p':             //print
         print_angle();
         break;
@@ -1194,17 +988,13 @@ void serialCheck() {
         break;
 
       case 'k':
-        { 
-          parameterEditmain();
-          
-          break;
-        }
+        parameterEditmain();
+        break;
 
       default:
         break;
     }
   }
-
 }
 
 
@@ -1254,9 +1044,6 @@ void parameterQuery() {
   }
   SerialUSB.println("");
   SerialUSB.println("};");
-
-
-
 }
 
 
@@ -1265,14 +1052,12 @@ int mod(int xMod, int mMod) {
 }
 
 
-
 void antiCoggingCal() {
   SerialUSB.println(" -----------------BEGIN ANTICOGGING CALIBRATION!----------------");
   mode = 'x';
   r = lookup_angle(1);
   enableTCInterrupts();
   delay(1000);
-
 
   for (int i = 1; i < 657; i++) {
     r = lookup_angle(i);
@@ -1295,9 +1080,6 @@ void antiCoggingCal() {
 }
 
 
-
-
-
 void parameterEditmain() {
 
     SerialUSB.println();
@@ -1314,36 +1096,25 @@ void parameterEditmain() {
 
     switch (inChar2) {
       case 'p':
-      {
-         parameterEditp();
-      }
+        parameterEditp();
         break;
 
       case 'v':
-      {    
-       parameterEditv();     
-      }      
+        parameterEditv();
         break;
 
       case 'o':
-      {
         parameterEdito();
-      }
         break;
-      default:
-      {}
-        break;
-    
-   
 
-          }
+      default:
+        break;
+    }
 }
 
 
 void parameterEditp(){
-
-
-  SerialUSB.println("Edit position loop gains:");
+        SerialUSB.println("Edit position loop gains:");
         SerialUSB.println();
         SerialUSB.print("p ----- pKp = ");
         SerialUSB.println(pKp,DEC);
@@ -1430,29 +1201,23 @@ void parameterEditv(){
 }
 
 void parameterEdito(){
-
-
-  SerialUSB.println("Edit other parameters:");
+        SerialUSB.println("Edit other parameters:");
         SerialUSB.println();
         SerialUSB.print("p ----- PA = ");
         SerialUSB.println(PA,DEC);
         SerialUSB.println();
 
-        
         while (SerialUSB.available() == 0)  {}
         char inChar3 = (char)SerialUSB.read();
         
         switch (inChar3) {
             case 'p':
-              {
               SerialUSB.println("PA = ?");
               while (SerialUSB.available() == 0)  {}
               PA = SerialUSB.parseFloat();
-              }
-       
               break;
+
             default:
-            {}
               break;
         }
 }
