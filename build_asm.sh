@@ -1,6 +1,18 @@
 #!/usr/bin/env sh
 
-# If you're not using platformio to build, you can set 'verbose output' 
-# in the Arduino IDE to find where the .elf is output.
-platformio run
-avr-objdump -m avr2 -S .pioenvs/zeroUSB/firmware.elf > Mechaduino.asm
+set -eu
+
+# Uncomment this line if you're missing the board definitions. 
+# arduino --install-boards "arduino:samd" || true
+
+# Build, and generate asm file.
+arduino \
+    --board arduino:samd:arduino_zero_native \
+    --verify Mechaduino/Mechaduino.ino \
+    --preserve-temp-files \
+    --verbose \
+    | grep -o "\"/tmp/.*\.elf\"" \
+    | head -n1 \
+    | xargs -i mv {} `pwd`
+
+avr-objdump -m avr2 -S Mechaduino.ino.elf > Mechaduino.asm
