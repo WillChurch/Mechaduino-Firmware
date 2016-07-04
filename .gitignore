@@ -1,4 +1,5 @@
-# Platform io local files.
+# Local build artifacts.
+Mechaduino.asm
 .pioenvs
 
 # Windows image file caches
