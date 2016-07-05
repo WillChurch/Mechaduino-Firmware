@@ -41,74 +41,73 @@ int val2 = 0;
 /////////////////FUNCTIONS/////////////////////
 //////////////////////////////////////
 
-void TC5_Handler()
-{
+void TC5_Handler() {
 
-  //unedited/old:
-  /*  // TcCount16* TC = (TcCount16*) TC3; // get timer struct
+    //unedited/old:
+    /*  // TcCount16* TC = (TcCount16*) TC3; // get timer struct
+      if (TC5->COUNT16.INTFLAG.bit.OVF == 1) {  // A overflow caused the interrupt
+          interrupted = 1;
+
+        TC5->COUNT16.INTFLAG.bit.OVF = 1;    // writing a one clears the flag ovf flag
+      //  irq_ovf_count++;                 // for debug leds
+      }
+
+      // if (TC->INTFLAG.bit.MC0 == 1) {  // A compare to cc0 caused the interrupt
+      //  digitalWrite(pin_mc0_led, LOW);  // for debug leds
+       // TC->INTFLAG.bit.MC0 = 1;    // writing a one clears the flag ovf flag
+      // } */
+
+
+    ///new
+    // TcCount16* TC = (TcCount16*) TC3; // get timer struct
     if (TC5->COUNT16.INTFLAG.bit.OVF == 1) {  // A overflow caused the interrupt
-        interrupted = 1;
 
-      TC5->COUNT16.INTFLAG.bit.OVF = 1;    // writing a one clears the flag ovf flag
-    //  irq_ovf_count++;                 // for debug leds
-    }
+        a = readEncoder();
+        y = lookup_angle(a);
 
-    // if (TC->INTFLAG.bit.MC0 == 1) {  // A compare to cc0 caused the interrupt
-    //  digitalWrite(pin_mc0_led, LOW);  // for debug leds
-     // TC->INTFLAG.bit.MC0 = 1;    // writing a one clears the flag ovf flag
-    // } */
+        if ((y - y_1) < -180.0) {
+            wrap_count += 1;
+        }
+        else if ((y - y_1) > 180.0) {
+            wrap_count -= 1;
+        }
+        //y_1 = y;  pushed lower
 
+        yw = (y + (360.0 * wrap_count));
 
-  ///new
-  // TcCount16* TC = (TcCount16*) TC3; // get timer struct
-  if (TC5->COUNT16.INTFLAG.bit.OVF == 1) {  // A overflow caused the interrupt
+        switch (mode) {
+            case Position:
+                e = (r - yw);
 
-    a = readEncoder();
-    y = lookup_angle(a);
+                ITerm += (pKi * e);
+                if (ITerm > 150) ITerm = 150;
+                else if (ITerm < -150) ITerm = -150;
 
-    if ((y - y_1) < -180.0) {
-      wrap_count += 1;
-    }
-    else if ((y - y_1) > 180.0) {
-      wrap_count -= 1;
-    }
-    //y_1 = y;  pushed lower
+                u = ((pKp * e) + ITerm - (pKd * (yw - yw_1))); //ARDUINO library style
+                //u = u+lookup_force(a)-20;
+                //   u = u_1 + cA*e + cB*e_1 + cC*e_2;     //ppt linked in octave script
 
-    yw = (y + (360.0 * wrap_count));
+                //  u = 20*e;//
+                break;
 
-    switch (mode) {
-      case Position:
-        e = (r - yw);
+            case Velocity:
+                e = (r - ((yw - yw_1) * 500));//416.66667)); degrees per Tc to rpm
 
-        ITerm += (pKi * e);
-        if (ITerm > 150) ITerm = 150;
-        else if (ITerm < -150) ITerm = -150;
+                ITerm += (vKi * e);
+                if (ITerm > 200) ITerm = 200;
+                else if (ITerm < -200) ITerm = -200;
 
-        u = ((pKp * e) + ITerm - (pKd * (yw - yw_1))); //ARDUINO library style
-        //u = u+lookup_force(a)-20;
-        //   u = u_1 + cA*e + cB*e_1 + cC*e_2;     //ppt linked in octave script
+                u = ((vKp * e) + ITerm - (vKd * (yw - yw_1)));//+ lookup_force(a)-20; //ARDUINO library style
+                break;
 
-        //  u = 20*e;//
-        break;
+            case Torque:
+                u = 1.0 * r;//+ 1.7*(lookup_force(a)-20);
+                break;
 
-      case Velocity:
-        e = (r - ((yw - yw_1) * 500));//416.66667)); degrees per Tc to rpm
-
-        ITerm += (vKi * e);
-        if (ITerm > 200) ITerm = 200;
-        else if (ITerm < -200) ITerm = -200;
-
-        u = ((vKp * e) + ITerm - (vKd * (yw - yw_1)));//+ lookup_force(a)-20; //ARDUINO library style
-        break;
-
-      case Torque:
-        u = 1.0 * r ;//+ 1.7*(lookup_force(a)-20);
-        break;
-
-      default:
-        u = 0;
-        break;
-    }
+            default:
+                u = 0;
+                break;
+        }
 
 //
 //    if (u > 0) {
@@ -120,142 +119,136 @@ void TC5_Handler()
 //
 //    y += PA;
 
-    if (u > 0) {
-      y+=PA;
+        if (u > 0) {
+            y += PA;
+        }
+        else {
+            y -= PA;
+        }
+
+        if (u > 200) {                          //saturation limits max current command
+            u = 200;
+        }
+        else if (u < -200) {
+            u = -200;
+        }
+
+        U = abs(u);       //+lookup_force((((a-4213)%16384)+16384)%16384)-6); ///p);//+i);
+
+        if (abs(e) < 0.1) {
+            digitalWrite(PULSE, HIGH);
+            //  SerialUSB.println(r);
+        }
+        else {
+            digitalWrite(PULSE, LOW);
+        }
+
+        output(-y, U);  //-y
+
+        e_3 = e_2;
+        e_2 = e_1;
+        e_1 = e;
+        u_3 = u_2;
+        u_2 = u_1;
+        u_1 = u;
+        yw_1 = yw;
+        y_1 = y;
+
+
+        TC5->COUNT16.INTFLAG.bit.OVF = 1;    // writing a one clears the flag ovf flag
+    }
+}
+
+void output(float theta,
+            int effort) {                    //////////////////////////////////////////   OUTPUT   ///////////////////
+    static int start = 0;
+    static int finish = 0;
+    static int intangle;
+    static float floatangle;
+    static int modangle;
+
+
+    floatangle = (10000 * (theta * 0.87266 +
+                           2.3562));//0.7854) );// 2.3562) );       //changed to 2.3 for NEMA23,NEMA17 dual..... opposite below
+    //floatangle = (10000 * ( theta * 0.87266 + 0.7854) );
+
+    intangle = (int) floatangle;
+    //  modangle = (((intangle % 628) + 628) % 628);
+    val1 = effort * lookup_sine(intangle);
+
+    analogWrite(VREF_2, abs(val1));
+
+    if (val1 >= 0) {
+        digitalWrite(IN_4, HIGH);
+        //     PORTB |= (B00000001);
+        digitalWrite(IN_3, LOW);
+        //    PORTB &= ~(B00000010);
+
     }
     else {
-      y -=PA;
+        digitalWrite(IN_4, LOW);
+        //  PORTB &= ~(B00000001);
+        digitalWrite(IN_3, HIGH);
+        //    PORTB |= (B00000010);
+
     }
 
-    if (u > 200) {                          //saturation limits max current command
-      u = 200;
+    floatangle = (10000 * (theta * 0.8726646 + 0.7854));//2.3562) );//0.7854) );
+    //floatangle = (10000 * ( theta * 0.87266 + 2.3562) );
+
+    intangle = (int) floatangle;
+    // modangle = (((intangle % 628) + 628) % 628);
+    val2 = effort * lookup_sine(intangle);
+
+    analogWrite(VREF_1, abs(val2));
+
+    if (val2 >= 0) {
+        digitalWrite(IN_2, HIGH);
+        //     PORTB |= (B00000100);
+        digitalWrite(IN_1, LOW);
+        //     PORTB &= ~(B00001000);
+
     }
-    else if (u < -200) {
-      u = -200;
+    else {
+        digitalWrite(IN_2, LOW);
+        //   PORTB &= ~(B00000100);
+        digitalWrite(IN_1, HIGH);
+        //   PORTB |= (B00001000);
+
     }
-
-    U = abs(u);       //+lookup_force((((a-4213)%16384)+16384)%16384)-6); ///p);//+i);
-
-    if (abs(e) < 0.1) {
-      digitalWrite(PULSE, HIGH);
-      //  SerialUSB.println(r);
-    }
-    else  {
-      digitalWrite(PULSE, LOW);
-    }
-
-    output(-y, U);  //-y
-
-    e_3 = e_2;
-    e_2 = e_1;
-    e_1 = e;
-    u_3 = u_2;
-    u_2 = u_1;
-    u_1 = u;
-    yw_1 = yw;
-    y_1 = y;
-
-
-    TC5->COUNT16.INTFLAG.bit.OVF = 1;    // writing a one clears the flag ovf flag
-  }
 }
 
-void output(float theta, int effort) {                    //////////////////////////////////////////   OUTPUT   ///////////////////
-  static int start = 0;
-  static int finish = 0;
-  static int intangle;
-  static float floatangle;
-  static int modangle;
-
-
-  floatangle = (10000 * ( theta * 0.87266 + 2.3562) );//0.7854) );// 2.3562) );       //changed to 2.3 for NEMA23,NEMA17 dual..... opposite below
-  //floatangle = (10000 * ( theta * 0.87266 + 0.7854) );
-
-  intangle = (int)floatangle;
-  //  modangle = (((intangle % 628) + 628) % 628);
-  val1 = effort * lookup_sine(intangle);
-
-  analogWrite(VREF_2, abs(val1));
-
-  if (val1 >= 0)  {
-    digitalWrite(IN_4, HIGH);
-    //     PORTB |= (B00000001);
-    digitalWrite(IN_3, LOW);
-    //    PORTB &= ~(B00000010);
-
-  }
-  else  {
-    digitalWrite(IN_4, LOW);
-    //  PORTB &= ~(B00000001);
-    digitalWrite(IN_3, HIGH);
-    //    PORTB |= (B00000010);
-
-  }
-
-  floatangle = (10000 * (  theta * 0.8726646 + 0.7854) );//2.3562) );//0.7854) );
-  //floatangle = (10000 * ( theta * 0.87266 + 2.3562) );
-
-  intangle = (int)floatangle;
-  // modangle = (((intangle % 628) + 628) % 628);
-  val2 = effort * lookup_sine(intangle);
-
-  analogWrite(VREF_1, abs(val2));
-
-  if (val2 >= 0)  {
-    digitalWrite(IN_2, HIGH);
-    //     PORTB |= (B00000100);
-    digitalWrite(IN_1, LOW);
-    //     PORTB &= ~(B00001000);
-
-  }
-  else  {
-    digitalWrite(IN_2, LOW);
-    //   PORTB &= ~(B00000100);
-    digitalWrite(IN_1, HIGH);
-    //   PORTB |= (B00001000);
-
-  }
-}
-
-float lookup_force(int m)        /////////////////////////////////////////////////  LOOKUP_force   /////////////////////////////
+float lookup_force(
+        int m)        /////////////////////////////////////////////////  LOOKUP_force   /////////////////////////////
 {
-  float b_out;
-  //
-  //  m = (0.01*(((m % 62832) + 62832) % 62832))+0.5;  //+0.5 for rounding
-  //
-  //  //SerialUSB.println(m);
-  //
-  //  if (m > 314) {
-  //    m = m - 314;
-  //    b_out = -pgm_read_float_near(force_lookup + m);
-  //
-  //  }
-  //  else
-  //  {
-  b_out = pgm_read_float_near(force_lookup + m);
-  //  }
+    float b_out;
+    //
+    //  m = (0.01*(((m % 62832) + 62832) % 62832))+0.5;  //+0.5 for rounding
+    //
+    //  //SerialUSB.println(m);
+    //
+    //  if (m > 314) {
+    //    m = m - 314;
+    //    b_out = -pgm_read_float_near(force_lookup + m);
+    //
+    //  }
+    //  else
+    //  {
+    b_out = pgm_read_float_near(force_lookup + m);
+    //  }
 
-  return b_out;
+    return b_out;
 }
 
 
 void stepInterrupt() {
-  if (digitalRead(dir_pin))
-  {
-    step_count += 1;
-  }
-  else
-  {
-    step_count -= 1;
-  }
+    if (digitalRead(dir_pin)) {
+        step_count += 1;
+    }
+    else {
+        step_count -= 1;
+    }
 }
-
-
-//////////////////////////////
-// Command Interface
-
-
-
 
 //////////////////////////////////////
 // Arduino Main
@@ -280,8 +273,7 @@ void setup() {
     //pinMode(12, OUTPUT);
 }
 
-void loop()
-{
+void loop() {
     //mode = 'x';
 
     controller.serialCheck();
