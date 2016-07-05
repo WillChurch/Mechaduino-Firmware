@@ -70,7 +70,7 @@ const int spr = 200; //  200 steps per revolution
 const float aps = 360.0 / spr; // angle per step
 const int cpr = 16384; //counts per rev
 
-int dir = 1;		//initialize stepping mode variables
+
 int step_state = 1;
 
 long angle = 0; //holds processed angle value
@@ -83,7 +83,6 @@ volatile long step_count = 0;  //For step/dir interrupt
 
 volatile int interrupted = 0;
 
-int stepNumber = 0; // step index for cal routine
 
 
 //___________________________________

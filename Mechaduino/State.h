@@ -55,6 +55,8 @@ extern volatile float ITerm;
 
 extern volatile Mode mode;
 
+extern int dir;		//initialize stepping mode variables
+extern int stepNumber; // step index for cal routine
 
 
 
