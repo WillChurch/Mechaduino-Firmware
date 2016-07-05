@@ -23,8 +23,8 @@ void setupPins(voidFuncPtr stepInterruptFunction) {
   pinMode(IN_3, OUTPUT);
   pinMode(IN_2, OUTPUT);
   pinMode(IN_1, OUTPUT);
-  pinMode(pulse, OUTPUT);
-  pinMode(step_pin, INPUT);
+  pinMode(PULSE, OUTPUT);
+  pinMode(STEP, INPUT);
   pinMode(dir_pin, INPUT);
 
   pinMode(3, OUTPUT);
@@ -40,9 +40,9 @@ void setupPins(voidFuncPtr stepInterruptFunction) {
   digitalWrite(IN_2, HIGH);
   digitalWrite(IN_1, LOW);
 
-  pinMode(ledPin, OUTPUT); // visual signal of I/O to chip
+  pinMode(LED, OUTPUT); // visual signal of I/O to chip
   // pinMode(clockPin, OUTPUT); // SCK
-  pinMode(chipSelectPin, OUTPUT); // CSn -- has to toggle high and low to signal chip to start data transfer
+  pinMode(CHIP_SELECT, OUTPUT); // CSn -- has to toggle high and low to signal chip to start data transfer
   //  pinMode(inputPin, INPUT); // SDA
 }
 

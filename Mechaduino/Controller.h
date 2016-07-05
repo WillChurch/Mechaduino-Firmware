@@ -87,17 +87,17 @@ class Controller {
     void readEncoderDiagnostics()           //////////////////////////////////////////////////////   READENCODERDIAGNOSTICS   ////////////////////////////
     {
         long angleTemp;
-        digitalWrite(chipSelectPin, LOW);
+        digitalWrite(CHIP_SELECT, LOW);
 
         ///////////////////////////////////////////////READ DIAAGC (0x3FFC)
         SerialUSB.print("DIAAGC (0x3FFC)   ");
 
         SPI.transfer(0xFF);
         SPI.transfer(0xFC);
-        digitalWrite(chipSelectPin, HIGH);
+        digitalWrite(CHIP_SELECT, HIGH);
 
         delay(1);
-        digitalWrite(chipSelectPin, LOW);
+        digitalWrite(CHIP_SELECT, LOW);
 
         byte b1 = SPI.transfer(0xC0);
         byte b2 = SPI.transfer(0x00);
@@ -123,20 +123,20 @@ class Controller {
         }
         SerialUSB.println(" ");
 
-        digitalWrite(chipSelectPin, HIGH);
+        digitalWrite(CHIP_SELECT, HIGH);
 
         delay(1);
 
-        digitalWrite(chipSelectPin, LOW);
+        digitalWrite(CHIP_SELECT, LOW);
         ///////////////////////////////////////////////READ ERRFL (0x0001)
         SerialUSB.print("ERRFL (0x0001)   ");
 
         SPI.transfer(0x40);
         SPI.transfer(0x01);
-        digitalWrite(chipSelectPin, HIGH);
+        digitalWrite(CHIP_SELECT, HIGH);
 
         delay(1);
-        digitalWrite(chipSelectPin, LOW);
+        digitalWrite(CHIP_SELECT, LOW);
 
         b1 = SPI.transfer(0xC0);
         b2 = SPI.transfer(0x00);
@@ -160,7 +160,7 @@ class Controller {
 
         SerialUSB.println(" ");
 
-        digitalWrite(chipSelectPin, HIGH);
+        digitalWrite(CHIP_SELECT, HIGH);
 
         delay(1);
     }

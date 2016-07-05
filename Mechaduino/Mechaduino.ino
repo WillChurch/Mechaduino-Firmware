@@ -137,11 +137,11 @@ void TC5_Handler()
     U = abs(u);       //+lookup_force((((a-4213)%16384)+16384)%16384)-6); ///p);//+i);
 
     if (abs(e) < 0.1) {
-      digitalWrite(pulse, HIGH);
+      digitalWrite(PULSE, HIGH);
       //  SerialUSB.println(r);
     }
     else  {
-      digitalWrite(pulse, LOW);
+      digitalWrite(PULSE, LOW);
     }
 
     output(-y, U);  //-y

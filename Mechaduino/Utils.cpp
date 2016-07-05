@@ -35,7 +35,7 @@ const int mod(int xMod, int mMod) {
 
 int readEncoder() {
     long angleTemp;
-    digitalWrite(chipSelectPin, LOW);
+    digitalWrite(CHIP_SELECT, LOW);
 
     //angle = SPI.transfer(0xFF);
     byte b1 = SPI.transfer(0xFF);
@@ -45,6 +45,6 @@ int readEncoder() {
     angleTemp = (((b1 << 8) | b2) & 0B0011111111111111);
     //  SerialUSB.println((angle & 0B0011111111111111)*0.02197265625);
 
-    digitalWrite(chipSelectPin, HIGH);
+    digitalWrite(CHIP_SELECT, HIGH);
     return angleTemp;
 }
