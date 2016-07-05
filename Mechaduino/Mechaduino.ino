@@ -130,6 +130,13 @@ const int dir_pin = 0;//2;
 
 //interrupt vars
 
+enum Mode {
+    Position,
+    Velocity,
+    Torque,
+    Custom
+};
+
 volatile float ei = 0.0;
 volatile int U = 0;  //control effort (abs)
 volatile float r = 0.0;  //setpoint
@@ -155,7 +162,7 @@ volatile float y_1 = 0;
 
 volatile float ITerm;
 
-volatile char mode;
+volatile Mode mode;
 
 
 int analogPin = 1;
@@ -248,7 +255,7 @@ void TC5_Handler()
     yw = (y + (360.0 * wrap_count));
 
     switch (mode) {
-      case 'x':
+      case Position:
         e = (r - yw);
 
         ITerm += (pKi * e);
@@ -262,7 +269,7 @@ void TC5_Handler()
         //  u = 20*e;//
         break;
 
-      case 'v':
+      case Velocity:
         e = (r - ((yw - yw_1) * 500));//416.66667)); degrees per Tc to rpm
 
         ITerm += (vKi * e);
@@ -272,7 +279,7 @@ void TC5_Handler()
         u = ((vKp * e) + ITerm - (vKd * (yw - yw_1)));//+ lookup_force(a)-20; //ARDUINO library style
         break;
 
-      case 't':
+      case Torque:
         u = 1.0 * r ;//+ 1.7*(lookup_force(a)-20);
         break;
 
@@ -817,19 +824,19 @@ void serialCheck() {
         break;
 
       case 'x':
-        mode = 'x';           //position loop
+        mode = Mode::Position;
         break;
 
       case 'v':
-        mode = 'v';           //velocity loop
+        mode = Mode::Velocity;
         break;
 
       case 't':
-        mode = 't';           //torque loop
+        mode = Mode::Torque;
         break;
 
       case 'c':
-        mode = 'c';           //custom loop
+        mode = Mode::Custom;
         break;
 
       case 'q':
@@ -907,7 +914,7 @@ int mod(int xMod, int mMod) {
 
 void antiCoggingCal() {
   SerialUSB.println(" -----------------BEGIN ANTICOGGING CALIBRATION!----------------");
-  mode = 'x';
+  mode = Mode::Position;
   r = lookup_angle(1);
   enableTCInterrupts();
   delay(1000);
