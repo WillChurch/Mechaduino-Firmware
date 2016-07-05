@@ -55,21 +55,12 @@
 #include <SPI.h>
 #include <Wire.h>
 #include "Mechaduino_functions.h"
-#include "lookup/Parameters.h"
-#include "lookup/Lookup.h"
 #include "Setup.h"
+#include "State.h"
+#include "ParameterEditor.h"
+#include "Utils.h"
 
-//----Current Parameters-----
-
-const float Ts = 0.0003333333;
-
-volatile float pKp = 30.75;
-volatile float pKi = 0.50;
-volatile float pKd = 5.00;
-
-volatile float vKp = 0.05;
-volatile float vKi = 200.00 * Ts;
-volatile float vKd = 0.00 / Ts;
+ParameterEditor parameterEditor = ParameterEditor();
 
 const PROGMEM float force_lookup[] = {
 };
@@ -106,50 +97,12 @@ float diff_angle = 0.0;
 int val1 = 0;
 int val2 = 0;
 
-//interrupt vars
-
-enum Mode {
-    Position,
-    Velocity,
-    Torque,
-    Custom
-};
-
-volatile float ei = 0.0;
-volatile int U = 0;  //control effort (abs)
-volatile float r = 0.0;  //setpoint
-volatile float y = 0.0;  // measured angle
-volatile float yw = 0.0;
-volatile float yw_1 = 0.0;
-volatile float e = 0.0;  // e = r-y (error)
-volatile float p = 0.0;  // proportional effort
-volatile float i = 0.0;  // integral effort
-volatile float PA = 1.8;  //
-
-volatile float u = 0.0;  //real control effort (not abs)
-volatile float u_1 = 0.0;
-volatile float e_1 = 0.0;
-volatile float u_2 = 0.0;
-volatile float e_2 = 0.0;
-volatile float u_3 = 0.0;
-volatile float e_3 = 0.0;
-volatile long counter = 0;
-
-volatile long wrap_count = 0;
-volatile float y_1 = 0;
-
-volatile float ITerm;
-
-volatile Mode mode;
-
 
 int analogPin = 1;
 int val = 0;
 
 int aout = 0;
 
-
-void waitSerialUSB();
 
 int readEncoder()           //////////////////////////////////////////////////////   READENCODER   ////////////////////////////
 {
@@ -168,36 +121,9 @@ int readEncoder()           ////////////////////////////////////////////////////
   return angleTemp;
 }
 
-float lookup_sine(int m)        /////////////////////////////////////////////////  LOOKUP_SINE   /////////////////////////////
-{
-  float b_out;
-
-  // @TODO Suspcicious
-  m = (0.01 * (((m % 62832) + 62832) % 62832)) + 0.5; //+0.5 for rounding
-
-  //SerialUSB.println(m);
-
-  if (m > 314) {
-    m = m - 314;
-    b_out = -pgm_read_float_near(Lookup::sine_lookup + m);
-  } else {
-    b_out = pgm_read_float_near(Lookup::sine_lookup + m);
-  }
-
-  return b_out;
-}
-
-
-
-
 //////////////////////////////////////
 /////////////////FUNCTIONS/////////////////////
 //////////////////////////////////////
-
-float lookup_angle(int n) {
-  return pgm_read_float_near(Parameters::lookup + n);
-}
-
 
 void TC5_Handler()
 {
@@ -673,11 +599,6 @@ void commandW() {
   SerialUSB.println(" ");
 }
 
-void waitSerialUSB() {
-    while (SerialUSB.available() == 0)  {
-    }
-}
-
 void serialCheck() {
 
   if (SerialUSB.available()) {
@@ -741,7 +662,7 @@ void serialCheck() {
         break;
 
       case 'q':
-        parameterQuery();     // prints copy-able parameters
+        parameterEditor.parameterQuery();     // prints copy-able parameters
         break;
 
       case 'a':             //anticogging
@@ -749,7 +670,7 @@ void serialCheck() {
         break;
 
       case 'k':
-        parameterEditmain();
+          parameterEditor.parameterEditMain();
         break;
 
       default:
@@ -757,61 +678,6 @@ void serialCheck() {
     }
   }
 }
-
-
-void parameterQuery() {
-  SerialUSB.println(' ');
-  SerialUSB.println("----Current Parameters-----");
-  SerialUSB.println(' ');
-  SerialUSB.println(' ');
-
-  SerialUSB.print("volatile float Ts = ");
-  SerialUSB.print(Ts, DEC);
-  SerialUSB.println(";");
-  SerialUSB.println(' ');
-
-  SerialUSB.print("volatile float pKp = ");
-  SerialUSB.print(pKp);
-  SerialUSB.println(";");
-
-  SerialUSB.print("volatile float pKi = ");
-  SerialUSB.print(pKi);
-  SerialUSB.println(";");
-
-  SerialUSB.print("volatile float pKd = ");
-  SerialUSB.print(pKd);
-  SerialUSB.println(";");
-
-  SerialUSB.println(' ');
-
-  SerialUSB.print("cvolatile float vKp = ");
-  SerialUSB.print(vKp);
-  SerialUSB.println(";");
-
-  SerialUSB.print("volatile float vKi = ");
-  SerialUSB.print(vKi / Ts);
-  SerialUSB.println(" * Ts;");
-
-  SerialUSB.print("volatile float vKd = ");
-  SerialUSB.print(vKd * Ts);
-  SerialUSB.println(" / Ts;");
-
-  SerialUSB.println(' ');
-
-  SerialUSB.println("const PROGMEM float lookup[] = {");
-  for (int i = 0; i < 16384; i++) {
-    SerialUSB.print(lookup_angle(i));
-    SerialUSB.print(", ");
-  }
-  SerialUSB.println("");
-  SerialUSB.println("};");
-}
-
-
-int mod(int xMod, int mMod) {
-  return (xMod % mMod + mMod) % mMod;
-}
-
 
 void antiCoggingCal() {
   SerialUSB.println(" -----------------BEGIN ANTICOGGING CALIBRATION!----------------");
@@ -840,148 +706,6 @@ void antiCoggingCal() {
   disableTCInterrupts();
 }
 
-
-void parameterEditmain() {
-
-    SerialUSB.println();
-    SerialUSB.println("Edit parameters:");
-    SerialUSB.println();
-    SerialUSB.println("p ----- proportional loop");
-    SerialUSB.println("v ----- velocity loop");
-    SerialUSB.println("o ----- other");
-    SerialUSB.println("q ----- quit");
-    SerialUSB.println();
-
-    waitSerialUSB();
-    char inChar2 = (char)SerialUSB.read();
-
-    switch (inChar2) {
-      case 'p':
-        parameterEditp();
-        break;
-
-      case 'v':
-        parameterEditv();
-        break;
-
-      case 'o':
-        parameterEdito();
-        break;
-
-      default:
-        break;
-    }
-}
-
-
-void parameterEditp(){
-        SerialUSB.println("Edit position loop gains:");
-        SerialUSB.println();
-        SerialUSB.print("p ----- pKp = ");
-        SerialUSB.println(pKp,DEC);
-        SerialUSB.print("i ----- pKi = ");
-        SerialUSB.println(pKi,DEC);
-        SerialUSB.print("d ----- pKd = ");
-        SerialUSB.println(pKd,DEC);
-        SerialUSB.println("q ----- quit");
-        SerialUSB.println();
-
-        waitSerialUSB();
-        char inChar3 = (char)SerialUSB.read();
-
-        switch (inChar3) {
-            case 'p':
-              {
-              SerialUSB.println("pKp = ?");
-              waitSerialUSB();
-              pKp = SerialUSB.parseFloat();
-              }
-              break;
-            case 'i':
-              {
-              SerialUSB.println("pKi = ?");
-              waitSerialUSB();
-              pKi = SerialUSB.parseFloat();
-              }
-              break;
-            case 'd':
-              {
-              SerialUSB.println("pKd = ?");
-              waitSerialUSB();
-              pKd = SerialUSB.parseFloat();
-              }
-              break;
-            default:
-            {}
-              break;
-        }
-}
-
-
-void parameterEditv(){
-  SerialUSB.println("Edit velocity loop gains:");
-  SerialUSB.println();
-  SerialUSB.print("p ----- vKp = ");
-  SerialUSB.println(vKp,DEC);
-  SerialUSB.print("i ----- vKi = ");
-  SerialUSB.println(vKi,DEC);
-  SerialUSB.print("d ----- vKd = ");
-  SerialUSB.println(vKd,DEC);
-  SerialUSB.println("q ----- quit");
-  SerialUSB.println();
-
-  waitSerialUSB();
-  char inChar4 = (char)SerialUSB.read();
-
-  switch (inChar4) {
-      case 'p':
-        {
-        SerialUSB.println("vKp = ?");
-        waitSerialUSB();
-        vKp = SerialUSB.parseFloat();
-        }
-        break;
-      case 'i':
-        {
-        SerialUSB.println("vKi = ?");
-        waitSerialUSB();
-        vKi = SerialUSB.parseFloat();
-        }
-        break;
-      case 'd':
-        {
-        SerialUSB.println("vKd = ?");
-        waitSerialUSB();
-        vKd = SerialUSB.parseFloat();
-        }
-        break;
-      default:
-      {}
-        break;
-  }
-}
-
-void parameterEdito(){
-        SerialUSB.println("Edit other parameters:");
-        SerialUSB.println();
-        SerialUSB.print("p ----- PA = ");
-        SerialUSB.println(PA,DEC);
-        SerialUSB.println();
-
-        waitSerialUSB();
-        char inChar3 = (char)SerialUSB.read();
-
-        switch (inChar3) {
-            case 'p':
-              SerialUSB.println("PA = ?");
-              waitSerialUSB();
-              PA = SerialUSB.parseFloat();
-              break;
-
-            default:
-              break;
-        }
-}
 
 //////////////////////////////////////
 // Arduino Main
