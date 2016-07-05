@@ -1,6 +1,10 @@
 #include <USB/USBAPI.h>
+#include <wiring_digital.h>
+#include <Arduino.h>
+#include <SPI.h>
 #include "lookup/Parameters.h"
 #include "lookup/Lookup.h"
+#include "Pins.h"
 
 float lookup_angle(int n) {
     return pgm_read_float_near(Parameters::lookup + n);
@@ -27,4 +31,20 @@ void waitSerialUSB() {
 
 const int mod(int xMod, int mMod) {
     return (xMod % mMod + mMod) % mMod;
+}
+
+int readEncoder() {
+    long angleTemp;
+    digitalWrite(chipSelectPin, LOW);
+
+    //angle = SPI.transfer(0xFF);
+    byte b1 = SPI.transfer(0xFF);
+    byte b2 = SPI.transfer(0xFF);
+
+
+    angleTemp = (((b1 << 8) | b2) & 0B0011111111111111);
+    //  SerialUSB.println((angle & 0B0011111111111111)*0.02197265625);
+
+    digitalWrite(chipSelectPin, HIGH);
+    return angleTemp;
 }

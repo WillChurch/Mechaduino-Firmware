@@ -58,6 +58,7 @@ extern volatile Mode mode;
 extern int dir;		//initialize stepping mode variables
 extern int stepNumber; // step index for cal routine
 
+extern int a;  // raw encoder value in closed loop and print_angle routine (should fix the latter to include LUT)
 
 
 #endif //MECHADUINO_STATE_H

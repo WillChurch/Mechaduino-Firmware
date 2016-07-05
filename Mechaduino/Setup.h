@@ -12,27 +12,8 @@
 #include <SPI.h>
 #include <USB/USBAPI.h>
 #include <delay.h>
-
-#define WAIT_TC16_REGS_SYNC(x) while(x->COUNT16.STATUS.bit.SYNCBUSY);
-
-//////////////////////////////////////
-//////////////////PINS////////////////
-//////////////////////////////////////
-
-const int IN_4 = 6;//11 - 1;
-const int IN_3 = 5;//12 - 1;
-const int VREF_2 = 4;//13 - 1;
-const int VREF_1 = 9;//3;//8-1;
-const int IN_2 = 7;//10 - 1;
-const int IN_1 = 8;//9 - 1;
-const int pulse = 13;//5;
-const int ledPin = 13;//5; //LED connected to digital pin 13
-const int chipSelectPin = A2;//5;//6; //output to chip select
-const int step_pin  = 1;
-const int dir_pin = 0;//2;
-
-//const int sine_out = //3;				// pins for debugging waveforms
-//const int encoder_out = //4;
+#include "Pins.h"
+#include "Utils.h"
 
 void setupPins(voidFuncPtr stepInterruptFunction) {
 

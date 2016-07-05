@@ -42,3 +42,5 @@ volatile Mode mode;
 // @TODO Why aren't these volatile?
 int dir = 1;		//initialize stepping mode variables
 int stepNumber = 0; // step index for cal routine
+
+int a = 0;  // raw encoder value in closed loop and print_angle routine (should fix the latter to include LUT)
