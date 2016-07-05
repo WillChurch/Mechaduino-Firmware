@@ -149,6 +149,8 @@ int val = 0;
 int aout = 0;
 
 
+void waitSerialUSB();
+
 int readEncoder()           //////////////////////////////////////////////////////   READENCODER   ////////////////////////////
 {
   long angleTemp;
@@ -671,6 +673,10 @@ void commandW() {
   SerialUSB.println(" ");
 }
 
+void waitSerialUSB() {
+    while (SerialUSB.available() == 0)  {
+    }
+}
 
 void serialCheck() {
 
@@ -714,8 +720,8 @@ void serialCheck() {
 
       case 'r':             //new setpoint
         SerialUSB.println("Enter setpoint:");
-        while (SerialUSB.available() == 0)  {}
-        r = SerialUSB.parseFloat();
+            waitSerialUSB();
+            r = SerialUSB.parseFloat();
         break;
 
       case 'x':
@@ -846,7 +852,7 @@ void parameterEditmain() {
     SerialUSB.println("q ----- quit");
     SerialUSB.println();
 
-    while (SerialUSB.available() == 0)  {}
+    waitSerialUSB();
     char inChar2 = (char)SerialUSB.read();
 
     switch (inChar2) {
@@ -880,28 +886,28 @@ void parameterEditp(){
         SerialUSB.println("q ----- quit");
         SerialUSB.println();
 
-        while (SerialUSB.available() == 0)  {}
+        waitSerialUSB();
         char inChar3 = (char)SerialUSB.read();
 
         switch (inChar3) {
             case 'p':
               {
               SerialUSB.println("pKp = ?");
-              while (SerialUSB.available() == 0)  {}
+              waitSerialUSB();
               pKp = SerialUSB.parseFloat();
               }
               break;
             case 'i':
               {
               SerialUSB.println("pKi = ?");
-              while (SerialUSB.available() == 0)  {}
+              waitSerialUSB();
               pKi = SerialUSB.parseFloat();
               }
               break;
             case 'd':
               {
               SerialUSB.println("pKd = ?");
-              while (SerialUSB.available() == 0)  {}
+              waitSerialUSB();
               pKd = SerialUSB.parseFloat();
               }
               break;
@@ -924,28 +930,28 @@ void parameterEditv(){
   SerialUSB.println("q ----- quit");
   SerialUSB.println();
 
-  while (SerialUSB.available() == 0)  {}
+  waitSerialUSB();
   char inChar4 = (char)SerialUSB.read();
 
   switch (inChar4) {
       case 'p':
         {
         SerialUSB.println("vKp = ?");
-        while (SerialUSB.available() == 0)  {}
+        waitSerialUSB();
         vKp = SerialUSB.parseFloat();
         }
         break;
       case 'i':
         {
         SerialUSB.println("vKi = ?");
-        while (SerialUSB.available() == 0)  {}
+        waitSerialUSB();
         vKi = SerialUSB.parseFloat();
         }
         break;
       case 'd':
         {
         SerialUSB.println("vKd = ?");
-        while (SerialUSB.available() == 0)  {}
+        waitSerialUSB();
         vKd = SerialUSB.parseFloat();
         }
         break;
@@ -962,13 +968,13 @@ void parameterEdito(){
         SerialUSB.println(PA,DEC);
         SerialUSB.println();
 
-        while (SerialUSB.available() == 0)  {}
+        waitSerialUSB();
         char inChar3 = (char)SerialUSB.read();
 
         switch (inChar3) {
             case 'p':
               SerialUSB.println("PA = ?");
-              while (SerialUSB.available() == 0)  {}
+              waitSerialUSB();
               PA = SerialUSB.parseFloat();
               break;
 
