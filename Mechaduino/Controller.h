@@ -12,7 +12,7 @@
 #include "ParameterEditor.h"
 #include "Utils.h"
 #include "Controller.h"
-#include "Pins.h"
+#include "constants/Pins.h"
 #include "Mechaduino_functions.h"
 
 /*

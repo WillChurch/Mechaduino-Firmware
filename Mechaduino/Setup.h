@@ -12,7 +12,7 @@
 #include <SPI.h>
 #include <USB/USBAPI.h>
 #include <delay.h>
-#include "Pins.h"
+#include "constants/Pins.h"
 #include "Utils.h"
 
 void setupPins(voidFuncPtr stepInterruptFunction) {

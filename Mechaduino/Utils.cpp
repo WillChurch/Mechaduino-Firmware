@@ -2,9 +2,9 @@
 #include <wiring_digital.h>
 #include <Arduino.h>
 #include <SPI.h>
-#include "lookup/Parameters.h"
-#include "lookup/Lookup.h"
-#include "Pins.h"
+#include "constants/Parameters.h"
+#include "constants/Lookup.h"
+#include "constants/Pins.h"
 
 float lookup_angle(int n) {
     return pgm_read_float_near(Parameters::lookup + n);
