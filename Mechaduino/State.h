@@ -2,7 +2,7 @@
 #define MECHADUINO_STATE_H
 
 #include <USB/USBAPI.h>
-#include "lookup/Parameters.h"
+#include "constants/Parameters.h"
 
 
 const float Ts = 0.0003333333;

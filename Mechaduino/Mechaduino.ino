@@ -45,6 +45,66 @@ int val2 = 0;
 /////////////////FUNCTIONS/////////////////////
 //////////////////////////////////////
 
+void output(float theta,
+            int effort) {                    //////////////////////////////////////////   OUTPUT   ///////////////////
+    static int start = 0;
+    static int finish = 0;
+    static int intangle;
+    static float floatangle;
+    static int modangle;
+
+
+    floatangle = (10000 * (theta * 0.87266 +
+                           2.3562));//0.7854) );// 2.3562) );       //changed to 2.3 for NEMA23,NEMA17 dual..... opposite below
+    //floatangle = (10000 * ( theta * 0.87266 + 0.7854) );
+
+    intangle = (int) floatangle;
+    //  modangle = (((intangle % 628) + 628) % 628);
+    val1 = effort * lookup_sine(intangle);
+
+    analogWrite(VREF_2, abs(val1));
+
+    if (val1 >= 0) {
+        digitalWrite(IN_4, HIGH);
+        //     PORTB |= (B00000001);
+        digitalWrite(IN_3, LOW);
+        //    PORTB &= ~(B00000010);
+
+    }
+    else {
+        digitalWrite(IN_4, LOW);
+        //  PORTB &= ~(B00000001);
+        digitalWrite(IN_3, HIGH);
+        //    PORTB |= (B00000010);
+
+    }
+
+    floatangle = (10000 * (theta * 0.8726646 + 0.7854));//2.3562) );//0.7854) );
+    //floatangle = (10000 * ( theta * 0.87266 + 2.3562) );
+
+    intangle = (int) floatangle;
+    // modangle = (((intangle % 628) + 628) % 628);
+    val2 = effort * lookup_sine(intangle);
+
+    analogWrite(VREF_1, abs(val2));
+
+    if (val2 >= 0) {
+        digitalWrite(IN_2, HIGH);
+        //     PORTB |= (B00000100);
+        digitalWrite(IN_1, LOW);
+        //     PORTB &= ~(B00001000);
+
+    }
+    else {
+        digitalWrite(IN_2, LOW);
+        //   PORTB &= ~(B00000100);
+        digitalWrite(IN_1, HIGH);
+        //   PORTB |= (B00001000);
+
+    }
+}
+
+
 void TC5_Handler() {
 
     //unedited/old:
@@ -163,64 +223,6 @@ void TC5_Handler() {
     }
 }
 
-void output(float theta,
-            int effort) {                    //////////////////////////////////////////   OUTPUT   ///////////////////
-    static int start = 0;
-    static int finish = 0;
-    static int intangle;
-    static float floatangle;
-    static int modangle;
-
-
-    floatangle = (10000 * (theta * 0.87266 +
-                           2.3562));//0.7854) );// 2.3562) );       //changed to 2.3 for NEMA23,NEMA17 dual..... opposite below
-    //floatangle = (10000 * ( theta * 0.87266 + 0.7854) );
-
-    intangle = (int) floatangle;
-    //  modangle = (((intangle % 628) + 628) % 628);
-    val1 = effort * lookup_sine(intangle);
-
-    analogWrite(VREF_2, abs(val1));
-
-    if (val1 >= 0) {
-        digitalWrite(IN_4, HIGH);
-        //     PORTB |= (B00000001);
-        digitalWrite(IN_3, LOW);
-        //    PORTB &= ~(B00000010);
-
-    }
-    else {
-        digitalWrite(IN_4, LOW);
-        //  PORTB &= ~(B00000001);
-        digitalWrite(IN_3, HIGH);
-        //    PORTB |= (B00000010);
-
-    }
-
-    floatangle = (10000 * (theta * 0.8726646 + 0.7854));//2.3562) );//0.7854) );
-    //floatangle = (10000 * ( theta * 0.87266 + 2.3562) );
-
-    intangle = (int) floatangle;
-    // modangle = (((intangle % 628) + 628) % 628);
-    val2 = effort * lookup_sine(intangle);
-
-    analogWrite(VREF_1, abs(val2));
-
-    if (val2 >= 0) {
-        digitalWrite(IN_2, HIGH);
-        //     PORTB |= (B00000100);
-        digitalWrite(IN_1, LOW);
-        //     PORTB &= ~(B00001000);
-
-    }
-    else {
-        digitalWrite(IN_2, LOW);
-        //   PORTB &= ~(B00000100);
-        digitalWrite(IN_1, HIGH);
-        //   PORTB |= (B00001000);
-
-    }
-}
 
 float lookup_force(
         int m)        /////////////////////////////////////////////////  LOOKUP_force   /////////////////////////////
@@ -243,7 +245,6 @@ float lookup_force(
 
     return b_out;
 }
-
 
 void stepInterrupt() {
     if (digitalRead(dir_pin)) {
