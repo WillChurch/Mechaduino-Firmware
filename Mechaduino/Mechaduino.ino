@@ -1,7 +1,11 @@
+
 /*
   SAM21D18 (Arduino Zero compatible), AS5047 encoder, A4954 driver
 
   Controlled via a SerialUSB terminal at 115200 baud.
+
+  WC manyfile edit, forked from mfarrugi 7/7
+  Editting in Arduino IDE for end user experience. 
 
 */
 
