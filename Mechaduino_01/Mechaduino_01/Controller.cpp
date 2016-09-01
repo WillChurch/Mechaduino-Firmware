@@ -25,19 +25,17 @@ void TC5_Handler()
      // TC->INTFLAG.bit.MC0 = 1;    // writing a one clears the flag ovf flag
     // } */
 
-
-
   ///new
   // TcCount16* TC = (TcCount16*) TC3; // get timer struct
+  
+  
   if (TC5->COUNT16.INTFLAG.bit.OVF == 1) {  // A overflow caused the interrupt
-
-
-
-
+  
     a = readEncoder();
     y = lookup_angle(a);
 
-
+	
+	//PROCESS WRAPAROUND
     if ((y - y_1) < -180.0) {
       wrap_count += 1;
     }
@@ -49,10 +47,6 @@ void TC5_Handler()
     yw = (y + (360.0 * wrap_count));
 
 
-
-
-
-
     switch (mode) {
 
       case 'x':
@@ -62,14 +56,11 @@ void TC5_Handler()
         if (ITerm > 150) ITerm = 150;
         else if (ITerm < -150) ITerm = -150;
 
-
         u = ((pKp * e) + ITerm - (pKd * (yw - yw_1))); //ARDUINO library style
         //u = u+lookup_force(a)-20;
         //   u = u_1 + cA*e + cB*e_1 + cC*e_2;     //ppt linked in octave script
 
         //  u = 20*e;//
-
-
 
         break;
 
@@ -78,12 +69,13 @@ void TC5_Handler()
 
         e = (r - ((yw - yw_1) * 500));//416.66667)); degrees per Tc to rpm
 
-        ITerm += (vKi * e);
-        if (ITerm > 200) ITerm = 200;
+        ITerm += (vKi * e);								//ADD TO RUNNING INTEGRAL ERROR TERM
+		
+        if (ITerm > 200) ITerm = 200;					//CURRENT LIMIT SAFETY 
         else if (ITerm < -200) ITerm = -200;
 
 
-        u = ((vKp * e) + ITerm - (vKd * (yw - yw_1)));//+ lookup_force(a)-20; //ARDUINO library style
+        u = ((vKp * e) + ITerm - (vKd * (yw - yw_1))); 	//SUM PID CONTROL EFFORTS 
 
         break;
 
@@ -95,7 +87,6 @@ void TC5_Handler()
         u = 0;
         break;
     }
-
 
 
 
@@ -121,8 +112,6 @@ void TC5_Handler()
 
 
 
-
-
     if (u > uMAX) {                          //saturation limits max current command
       u = uMAX;
     }
@@ -133,8 +122,9 @@ void TC5_Handler()
 
 
     U = abs(u);       //+lookup_force((((a-4213)%16384)+16384)%16384)-6); ///p);//+i);
-
-
+	
+	
+	//IF CONTROL EFFORT IS BELOW THRESHOLD, ILLUMINATE LED
     if (abs(e) < 0.1) {
       digitalWrite(pulse, HIGH);
      //   SerialUSB.println(r);
@@ -144,8 +134,10 @@ void TC5_Handler()
     }
 
     output(-y, U);  //-y
-
-    e_3 = e_2;
+	
+	
+	//END OF LOOP, SHIFT PARAMETERS BACK ONE TIMESTEP
+	e_3 = e_2;
     e_2 = e_1;
     e_1 = e;
     u_3 = u_2;

@@ -1,7 +1,6 @@
-  
 /*
 
-  Mechaduino 0.1 Firmware  --multi file branch
+  Mechaduino 0.1 Firmware  --Kalman Filtered Velocity Loop Branch
     
   SAM21D18 (Arduino Zero compatible), AS5047 encoder, A4954 driver
 
@@ -22,17 +21,17 @@
   
   y  -  enable controller interrupts
 
-  n  - disable controller interrupts
+  n  -  disable controller interrupts
 
   r  -  enter new setpoint
 
-  x  - position mode
+  x  -  position mode
 
   v  -  velocity mode
 
   t  -  torque mode
 
-  q  - parameter query (prints current parameters)
+  q  -  parameter query (prints current parameters)
 
   e  -  reads encoder diagnostic register 
 
@@ -53,11 +52,9 @@
 
 void setup() {
 
-
   setupPins();
   setupSPI();
   setupTCInterrupts();
-
   SerialUSB.begin(115200);
 
   // while (!SerialUSB) {};     //wait for serial
@@ -68,13 +65,14 @@ void setup() {
    enableTCInterrupts();     //start in closed loop mode
    mode = 'v';
    r = 50;
-  //  Wire.begin(4);                // join i2c bus with address #8
-  //  Wire.onReceive(receiveEvent); // register event
+	
+   //  Wire.begin(4);                // join i2c bus with address #8
+   //  Wire.onReceive(receiveEvent); // register event
 
-  delay(1500);
+   delay(1500);
 
-  SerialUSB.println("Mechaduino 0.1 begin...");
-  mode = 'x';
+   SerialUSB.println("Mechaduino 0.1 begin...");
+   mode = 'x';
 }
 
 
@@ -86,10 +84,7 @@ void setup() {
 void loop()
 {
 
-
-
   serialCheck();
 
-
-
 }
+

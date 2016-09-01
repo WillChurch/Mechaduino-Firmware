@@ -7,13 +7,13 @@
 	void setupPins();
 	
 	void setupSPI();
-		
+
 	void stepInterrupt();
 
 	void output(float theta, int effort);	
 
 	void commandW();	
-		
+	
 	void serialCheck();
 
 	void parameterQuery();
@@ -39,8 +39,10 @@
 	void setupTCInterrupts();
 	
 	void enableTCInterrupts();
+	//ENABLE CLOSED LOOP MODE
 	
 	void disableTCInterrupts();
+	//DISABLE CLOSED LOOP MODE 
 	
 	void antiCoggingCal();
 	
