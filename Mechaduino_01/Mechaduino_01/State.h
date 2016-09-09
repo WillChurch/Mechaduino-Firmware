@@ -6,25 +6,31 @@
 //interrupt vars
 
 extern volatile float ei;
-extern volatile int U;  	//control effort (abs)
-extern volatile float r;  	//setpoint
-extern volatile float y;  	//measured angle
-extern volatile float y_1; 	//last measured angle 
-extern volatile float yw; 	//measured angle with wrap count
-extern volatile float yw_1; //last measured angle with wrap count 	
+extern volatile int U;  		//control effort (abs)
+extern volatile float r;  		//setpoint
+extern volatile float y;  		//measured angle
+extern volatile float y_1; 		//last measured angle 
+extern volatile float yw; 		//measured angle with wrap count
+extern volatile float yw_1;		//last measured angle with wrap count 	
 
-extern volatile float p;  	// proportional effort
-extern volatile float i;  	// integral effort
-extern volatile float PA;  	//
+extern volatile float p;  		// proportional effort
+extern volatile float i;  		// integral effort
+extern volatile float PA;  		//
 
-extern volatile float u;  	//real control effort (not abs)
-extern volatile float e;  	//e = r-y (error)
-extern volatile float u_1;	//last control effort (not abs)
-extern volatile float e_1;	//last error
+extern volatile float u;  		//real control effort (not abs)
+extern volatile float e;  		//e = r-y (error)
+extern volatile float u_1;		//last control effort (not abs)
+extern volatile float e_1;		//last error
 extern volatile float u_2;	
 extern volatile float e_2;
 extern volatile float u_3;
 extern volatile float e_3;
+
+//Kalman Parameters
+extern volatile float xhat1;   //Position prediction
+extern volatile float xhat2;   //Velocity prediction
+
+
 
 extern volatile long counter;
 extern volatile long wrap_count;
@@ -32,7 +38,7 @@ extern volatile long wrap_count;
 extern volatile float ITerm; 	//INTEGRAL TERM FOR PID CONTROL: Incremental sum of (e times Ki) 
 extern volatile int uMAX;		//MAX CONTROL EFFORT, AS DEFINED BY MAX CURRENT LIMIT 
 
-extern volatile char mode;
+extern volatile char mode;		//MODE SELECTION
 
 extern int dir;
 extern int stepNumber;

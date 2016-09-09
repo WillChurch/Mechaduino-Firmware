@@ -20,6 +20,7 @@ extern volatile float vKd;
 //////////////////////////////////////
 //////////////////PINS////////////////
 //////////////////////////////////////
+
 extern int IN_4;
 extern int IN_3;
 extern int VREF_2;
@@ -37,28 +38,27 @@ extern int dir_pin;
 //extern int sine_out;				
 //extern int encoder_out;
 
+extern const int spr; 				//steps per revolution
+extern const float aps; 			//angle per step
+extern int cpr; 					//counts per rev
 
-extern const int spr; //  200 steps per revolution
-extern const float aps; // angle per step
-extern int cpr; //counts per rev
 
-
-extern int dir;		//initialize stepping mode variables
+extern int dir;						//initialize stepping mode variables
 extern int step_state;
 
 
-extern long angle; //holds processed angle value
+extern long angle; 					//holds processed angle value
 
 extern float anglefloat;
 
-extern int a;  // raw encoder value in closed loop and print_angle routine (should fix the latter to include LUT)
+extern int a;  						// raw encoder value in closed loop and print_angle routine (should fix the latter to include LUT)
 
 
-extern volatile long step_count;  //For step/dir interrupt
+extern volatile long step_count;  	//For step/dir interrupt
 
 extern volatile int interrupted;
 
-extern int stepNumber; // step index for cal routine
+extern int stepNumber; 				// step index for cal routine
 
 
 extern const PROGMEM float sine_lookup[];

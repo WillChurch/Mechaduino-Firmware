@@ -1,6 +1,7 @@
+
 /*
 
-  Mechaduino 0.1 Firmware  --Kalman Filtered Velocity Loop Branch
+  Mechaduino 0.1 Firmware  --Kalman Filter Velocity Loop Branch
     
   SAM21D18 (Arduino Zero compatible), AS5047 encoder, A4954 driver
 
@@ -11,7 +12,7 @@
   Controlled via a SerialUSB terminal at 115200 baud.
 
   Implemented serial commands are:
-
+3
 
   s  -  step
 
@@ -62,9 +63,9 @@ void setup() {
   delay(500);
 
 
-   enableTCInterrupts();     //start in closed loop mode
-   mode = 'v';
-   r = 50;
+  // enableTCInterrupts();     //start in closed loop mode
+  // mode = 'v';
+  // r = 50;
 	
    //  Wire.begin(4);                // join i2c bus with address #8
    //  Wire.onReceive(receiveEvent); // register event
@@ -72,7 +73,7 @@ void setup() {
    delay(1500);
 
    SerialUSB.println("Mechaduino 0.1 begin...");
-   mode = 'x';
+ //  mode = 'x';
 }
 
 

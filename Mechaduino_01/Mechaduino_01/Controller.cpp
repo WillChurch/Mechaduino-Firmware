@@ -65,15 +65,13 @@ void TC5_Handler()
         break;
 
       case 'v':
-
-
-        e = (r - ((yw - yw_1) * 500));//416.66667)); degrees per Tc to rpm
-
+        SerialUSB.println(r, e);
+        e =(r - (((yw - yw_1)/Ts) * (60/360)) ) ;       //ERROR, IN RPM, SCALED FROM DEGREES/SEC
+  
         ITerm += (vKi * e);								//ADD TO RUNNING INTEGRAL ERROR TERM
 		
         if (ITerm > 200) ITerm = 200;					//CURRENT LIMIT SAFETY 
         else if (ITerm < -200) ITerm = -200;
-
 
         u = ((vKp * e) + ITerm - (vKd * (yw - yw_1))); 	//SUM PID CONTROL EFFORTS 
 

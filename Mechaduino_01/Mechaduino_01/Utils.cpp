@@ -315,10 +315,12 @@ void serialCheck() {
         break;
 
       case 'y':
+        SerialUSB.println("Closed Loop Enabled");
         enableTCInterrupts();      //enable closed loop
         break;
 
       case 'n':
+        SerialUSB.println("Closed Loop Disabled");
         disableTCInterrupts();      //disable closed loop
         break;
 
@@ -330,10 +332,12 @@ void serialCheck() {
         break;
 
       case 'x':
+        SerialUSB.println("Position Mode Enabled");
         mode = 'x';           //position loop
         break;
 
       case 'v':
+        SerialUSB.println("Velocity Mode Enabled");
         mode = 'v';           //velocity loop
         break;
 

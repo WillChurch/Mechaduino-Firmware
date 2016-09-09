@@ -24,6 +24,10 @@ volatile float e_2 = 0.0;
 volatile float u_3 = 0.0;
 volatile float e_3 = 0.0;
 
+volatile float xhat1 = 0.0; 
+volatile float xhat2  = 0.0;
+
+
 volatile long counter = 0;
 volatile long wrap_count = 0;
 
