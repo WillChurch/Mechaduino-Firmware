@@ -65,7 +65,7 @@ void TC5_Handler()
         break;
 
       case 'v':
-        SerialUSB.println(r, e);
+
         e =(r - (((yw - yw_1)/Ts) * (60/360)) ) ;       //ERROR, IN RPM, SCALED FROM DEGREES/SEC
   
         ITerm += (vKi * e);								//ADD TO RUNNING INTEGRAL ERROR TERM

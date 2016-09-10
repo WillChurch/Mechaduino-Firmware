@@ -26,10 +26,43 @@ extern volatile float e_2;
 extern volatile float u_3;
 extern volatile float e_3;
 
-//Kalman Parameters
+//Kalman Parameters//
+
+//Predicted State
 extern volatile float xhat1;   //Position prediction
 extern volatile float xhat2;   //Velocity prediction
+extern volatile float xhat1_1;
+extern volatile float xhat2_1;
 
+//Prediction Matrix 
+extern volatile float F11; 
+extern volatile float F12; 
+extern volatile float F21; 
+extern volatile float F22; 
+
+//Prediction Uncertainty
+extern volatile float P11;
+extern volatile float P12;
+extern volatile float P21;
+extern volatile float P22;
+
+//Kalman Gain
+extern volatile float K11; 
+extern volatile float K12; 
+extern volatile float K21; 
+extern volatile float K22; 
+
+//Process Error Term 
+extern volatile float Q11;		
+extern volatile float Q12;		
+extern volatile float Q21;		
+extern volatile float Q22;
+		
+//Observation Error Term
+extern volatile float R11;		
+extern volatile float R12;		
+extern volatile float R21;		
+extern volatile float R22;		
 
 
 extern volatile long counter;
@@ -43,7 +76,6 @@ extern volatile char mode;		//MODE SELECTION
 extern int dir;
 extern int stepNumber;
 extern void output(float,int);
-
 
 
 
