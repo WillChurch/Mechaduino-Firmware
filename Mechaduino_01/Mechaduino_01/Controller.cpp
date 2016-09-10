@@ -65,8 +65,21 @@ void TC5_Handler()
         break;
 
       case 'v':
-
-        e =(r - (((yw - yw_1)/Ts) * (60/360)) ) ;       //ERROR, IN RPM, SCALED FROM DEGREES/SEC
+		//Update Prediction
+		xhat1 = ((F11 * xhat1_1) + ( F12 * xhat2_1));
+		xhat2 = ((F21 * xhat1_1) + ( F22 * xhat2_1));
+		
+		P11 = F11*((F11*P11)+(F12*P21)) + F12*((F11*P12)+(F12*P22)) + Q11; 
+		P12 = F21*((F11*P11)+(F12*P21)) + F22*((F11*P12)+(F12*P22)) + Q12; 
+		P21 = F11*((F21*P11)+(F22*P21)) + F12*((F21*P12)+(F22*P22)) + Q21;
+		P22 = F21*((F21*P11)+(F22*P21)) + F22*((F21*P12)+(F22*P22)) + Q22; 
+		
+		
+		
+		xb1 = xhat1 + K1*(yw - xhat1);
+		xb2 = xhat2 + K2*((yw - yw_1)/Ts);
+		
+        e = r - xb2; 									//ERROR, DEGREES/SEC, Will be changed to RPM eventually. 
   
         ITerm += (vKi * e);								//ADD TO RUNNING INTEGRAL ERROR TERM
 		

@@ -28,9 +28,9 @@ volatile float e_3 = 0.0;
 
 //Predicted State
 volatile float xhat1 = 0.0;   //Position prediction
-volatile float xhat2 = r;   //Velocity prediction
+volatile float xhat2 = 0.0;   //Velocity prediction
 volatile float xhat1_1 = 0.0;   
-volatile float xhat2_1 = 0.0;   
+volatile float xhat2_1 = r; 
 
 //State Best Guess
 volatile float xb1 = 0.0;
@@ -38,7 +38,7 @@ volatile float xb2 = 0.0;
 
 //Prediction Matrix 
 volatile float F11 = 1.0; 
-volatile float F12 = Ts; 
+volatile float F12 = 0.0003333333; 	//This will be Ts, placeholder for now. 
 volatile float F21 = 0.0; 
 volatile float F22 = 1.0; 
 
@@ -47,6 +47,10 @@ volatile float P11 = 0.0;
 volatile float P12 = 0.0;
 volatile float P21 = 0.0;
 volatile float P22 = 0.0;
+volatile float P11_1 = 0.0;
+volatile float P12_1 = 0.0;
+volatile float P21_1 = 0.0;
+volatile float P22_1 = 0.0;
 
 //Best Guess Uncertainty
 volatile float Pb11 = 0.0;

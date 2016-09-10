@@ -44,11 +44,16 @@ extern volatile float F12;
 extern volatile float F21; 
 extern volatile float F22; 
 
+
 //Prediction Uncertainty
 extern volatile float P11;
 extern volatile float P12;
 extern volatile float P21;
 extern volatile float P22;
+extern volatile float P11_1;
+extern volatile float P12_1;
+extern volatile float P21_1;
+extern volatile float P22_1;
 
 //Best Guess Uncertainty
 extern volatile float Pb11;
@@ -67,12 +72,13 @@ extern volatile float Q11;
 extern volatile float Q12;		
 extern volatile float Q21;		
 extern volatile float Q22;
-		
+
 //Observation Error Term
 extern volatile float R11;		
 extern volatile float R12;		
 extern volatile float R21;		
 extern volatile float R22;		
+
 
 
 extern volatile long counter;
