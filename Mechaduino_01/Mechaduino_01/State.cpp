@@ -35,6 +35,7 @@ volatile float xhat2_1 = r;
 //State Best Guess
 volatile float xb1 = 0.0;
 volatile float xb2 = 0.0;
+volatile float xb1_1 = 0.0; 
 
 //Prediction Matrix 
 volatile float F11 = 1.0; 

@@ -37,6 +37,7 @@ extern volatile float xhat2_1;
 //State Best Guess
 extern volatile float xb1;
 extern volatile float xb2;
+extern volatile float xb1_1; 
 
 //Prediction Matrix 
 extern volatile float F11; 
