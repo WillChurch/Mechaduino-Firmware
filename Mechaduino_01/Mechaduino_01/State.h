@@ -34,6 +34,10 @@ extern volatile float xhat2;   //Velocity prediction
 extern volatile float xhat1_1;
 extern volatile float xhat2_1;
 
+//State Best Guess
+extern volatile float xb1;
+extern volatile float xb2;
+
 //Prediction Matrix 
 extern volatile float F11; 
 extern volatile float F12; 
@@ -45,6 +49,12 @@ extern volatile float P11;
 extern volatile float P12;
 extern volatile float P21;
 extern volatile float P22;
+
+//Best Guess Uncertainty
+extern volatile float Pb11;
+extern volatile float Pb12;
+extern volatile float Pb21;
+extern volatile float Pb22;
 
 //Kalman Gain
 extern volatile float K11; 

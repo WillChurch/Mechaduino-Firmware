@@ -32,6 +32,9 @@ volatile float xhat2 = r;   //Velocity prediction
 volatile float xhat1_1 = 0.0;   
 volatile float xhat2_1 = 0.0;   
 
+//State Best Guess
+volatile float xb1 = 0.0;
+volatile float xb2 = 0.0;
 
 //Prediction Matrix 
 volatile float F11 = 1.0; 
@@ -44,6 +47,12 @@ volatile float P11 = 0.0;
 volatile float P12 = 0.0;
 volatile float P21 = 0.0;
 volatile float P22 = 0.0;
+
+//Best Guess Uncertainty
+volatile float Pb11 = 0.0;
+volatile float Pb12 = 0.0;
+volatile float Pb21 = 0.0;
+volatile float Pb22 = 0.0;
 
 //Kalman Gain
 volatile float K11 = 0.0; 
