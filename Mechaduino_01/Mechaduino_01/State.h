@@ -33,13 +33,10 @@ extern volatile float e_3;
 //Predicted State
 extern volatile float xhat1;   //Position prediction
 extern volatile float xhat2;   //Velocity prediction
-extern volatile float xhat1_1;
-extern volatile float xhat2_1;
 
 //State Best Guess
 extern volatile float xb1;
 extern volatile float xb2;
-extern volatile float xb1_1; 
 
 //Prediction Matrix 
 extern volatile float F11; 
@@ -47,16 +44,11 @@ extern volatile float F12;
 extern volatile float F21; 
 extern volatile float F22; 
 
-
 //Prediction Uncertainty
 extern volatile float P11;
 extern volatile float P12;
 extern volatile float P21;
 extern volatile float P22;
-extern volatile float P11_1;
-extern volatile float P12_1;
-extern volatile float P21_1;
-extern volatile float P22_1;
 
 //Best Guess Uncertainty
 extern volatile float Pb11;
