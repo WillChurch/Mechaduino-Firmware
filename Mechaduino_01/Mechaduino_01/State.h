@@ -11,7 +11,9 @@ extern volatile float r;  		//setpoint
 extern volatile float y;  		//measured angle
 extern volatile float y_1; 		//last measured angle 
 extern volatile float yw; 		//measured angle with wrap count
-extern volatile float yw_1;		//last measured angle with wrap count 	
+extern volatile float yw_1;		//last measured angle with wrap count 
+extern volatile float vw;
+extern volatile float vw_1;
 
 extern volatile float p;  		// proportional effort
 extern volatile float i;  		// integral effort

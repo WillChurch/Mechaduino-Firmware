@@ -12,7 +12,6 @@
   Controlled via a SerialUSB terminal at 115200 baud.
 
   Implemented serial commands are:
-3
 
   s  -  step
 
@@ -45,7 +44,7 @@
 
 #include "Utils.h"
 #include "Parameters.h"
-#include "state.h"
+#include "State.h"
 
 //////////////////////////////////////
 /////////////////SETUP////////////////
@@ -84,8 +83,8 @@ void setup() {
 
 void loop()
 {
-
   serialCheck();
 
 }
+
 

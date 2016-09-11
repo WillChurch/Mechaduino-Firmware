@@ -10,6 +10,8 @@ volatile float y = 0.0;  		//measured angle
 volatile float y_1 = 0;			//last measured angle
 volatile float yw = 0.0;		//measured angle, with wrap count 
 volatile float yw_1 = 0.0;		//last measured angle, with wrap count 
+volatile float vw = 0.0;      //derivative of yw_1 
+volatile float vw_1 = 0.0;
 
 volatile float p = 0.0;  		// proportional effort
 volatile float i = 0.0;  		// integral effort
@@ -27,15 +29,15 @@ volatile float e_3 = 0.0;
 //Kalman Parameters//
 
 //Predicted State
-volatile float xhat1 = 0.0;   //Position prediction
-volatile float xhat2 = 0.0;   //Velocity prediction
+volatile float xhat1 = 1.0;   //Position prediction
+volatile float xhat2 = 1.0;   //Velocity prediction
 volatile float xhat1_1 = 0.0;   
 volatile float xhat2_1 = 0.0; 
 
 //State Best Guess
-volatile float xb1 = 0.0;
-volatile float xb2 = 0.0;
-volatile float xb1_1 = 0.0; 
+volatile float xb1 = 1.0;
+volatile float xb2 = 1.0;
+volatile float xb1_1 = 1.0; 
 
 //Prediction Matrix 
 volatile float F11 = 1.0; 
@@ -44,26 +46,26 @@ volatile float F21 = 0.0;
 volatile float F22 = 1.0; 
 
 //Prediction Uncertainty
-volatile float P11 = 0.0;
-volatile float P12 = 0.0;
-volatile float P21 = 0.0;
-volatile float P22 = 0.0;
+volatile float P11 = 1.0;
+volatile float P12 = 1.0;
+volatile float P21 = 1.0;
+volatile float P22 = 1.0;
 volatile float P11_1 = 0.0;
 volatile float P12_1 = 0.0;
 volatile float P21_1 = 0.0;
 volatile float P22_1 = 0.0;
 
 //Best Guess Uncertainty
-volatile float Pb11 = 0.00001;
-volatile float Pb12 = 0.0;
-volatile float Pb21 = 0.0;
-volatile float Pb22 = 0.00001;
+volatile float Pb11 = 0.50;
+volatile float Pb12 = 0.50;
+volatile float Pb21 = 0.50;
+volatile float Pb22 = 0.50;
 
 //Kalman Gain
-volatile float K11 = 0.0; 
-volatile float K12 = 0.0; 
-volatile float K21 = 0.0; 
-volatile float K22 = 0.0; 
+volatile float K11 = 1.0; 
+volatile float K12 = 1.0; 
+volatile float K21 = 1.0; 
+volatile float K22 = 1.0; 
 
 //Process Error Term 
 volatile float Q11 = 0.00001;		
