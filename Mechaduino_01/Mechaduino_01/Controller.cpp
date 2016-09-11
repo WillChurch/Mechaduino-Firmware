@@ -66,47 +66,48 @@ void TC5_Handler()
 
       case 'v':
     
-		//xhat = F * xhat_1 
-		xhat1_1 = xhat1;
-		xhat2_1 = xhat2; 
-		xhat1 = ((F11 * xhat1_1) + ( F12 * xhat2_1));
-		xhat2 = ((F21 * xhat1_1) + ( F22 * xhat2_1));
-		
-		//P = F * P_1 * F^T + Q 
-		P11_1 = P11;
-		P12_1 = P12;
-		P21_1 = P21;
-		P22_1 = P22; 
-		P11 = F11*((F11*P11_1)+(F12*P21_1)) + F12*((F11*P12_1)+(F12*P22_1)) + Q11; 
-		P12 = F21*((F11*P11_1)+(F12*P21_1)) + F22*((F11*P12_1)+(F12*P22_1)) + Q12; 
-		P21 = F11*((F21*P11_1)+(F22*P21_1)) + F12*((F21*P12_1)+(F22*P22_1)) + Q21;
-		P22 = F21*((F21*P11_1)+(F22*P21_1)) + F22*((F21*P12_1)+(F22*P22_1)) + Q22; 
-		
-		//K = P * (P + R)^-1 
-		K11 = (P11*(P22+R22)-P12*(P21+R21))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12))); 
-		K12 = (P12*(P11+R11)-P11*(P12+R12))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
-		K21 = (P21*(P22+R22)-P22*(P21+R21))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
-		K22 = (P22*(P11+R11)-P21*(P12+R12))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
-		
-		//xb = xhat + K * (yw - xhat) 
-		xb1_1 = xb1;
-		xb1 = xhat1 + (K11*(yw - xhat1) + K12*(((yw - yw_1)/Ts) - xhat2));
-		xb2 = xhat2 + (K21*(yw - xhat1) + K22*(((yw - yw_1)/Ts) - xhat2));
-		
-		//Pb = P - K * P
-		Pb11 = P11 + (K11*P11 + K12*P21);
-		Pb12 = P12 + (K11*P12 + K12*P22);
-		Pb21 = P21 + (K21*P11 + K22*P21);
-		Pb22 = P22 + (K21*P12 + K22*P22);
+    		//xhat = F * xhat_1 
+//    		xhat1_1 = xb1;
+//    		xhat2_1 = xb2; 
+    		
+    		xhat1 = ((F11 * xb1) + ( F12 * xb2));
+    		xhat2 = ((F21 * xb1) + ( F22 * xb2));
+    		
+    		//P = F * P_1 * F^T + Q 
+//    		P11_1 = P11;
+//    		P12_1 = P12;
+//    		P21_1 = P21;
+//    		P22_1 = P22; 
+    		P11 = F11*((F11*Pb11)+(F12*Pb21)) + F12*((F11*Pb12)+(F12*Pb22)) + Q11; 
+    		P12 = F21*((F11*Pb11)+(F12*Pb21)) + F22*((F11*Pb12)+(F12*Pb22)) + Q12; 
+    		P21 = F11*((F21*Pb11)+(F22*Pb21)) + F12*((F21*Pb12)+(F22*Pb22)) + Q21;
+    		P22 = F21*((F21*Pb11)+(F22*Pb21)) + F22*((F21*Pb12)+(F22*Pb22)) + Q22; 
+    		
+    		//K = P * (P + R)^-1 
+    		K11 = (P11*(P22+R22)-P12*(P21+R21))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12))); 
+    		K12 = (P12*(P11+R11)-P11*(P12+R12))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
+    		K21 = (P21*(P22+R22)-P22*(P21+R21))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
+    		K22 = (P22*(P11+R11)-P21*(P12+R12))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
+    		
+    		//xb = xhat + K * (yw - xhat) 
+    		//xb1_1 = xb1;
+    		xb1 = xhat1 + (K11*(yw - xhat1) + K12*(((yw - yw_1)/Ts) - xhat2));
+    		xb2 = xhat2 + (K21*(yw - xhat1) + K22*(((yw - yw_1)/Ts) - xhat2));
+    		
+    		//Pb = P - K * P
+    		Pb11 = P11 + (K11*P11 + K12*P21);
+    		Pb12 = P12 + (K11*P12 + K12*P22);
+    		Pb21 = P21 + (K21*P11 + K22*P21);
+    		Pb22 = P22 + (K21*P12 + K22*P22);
 
-        e = r - xb2; 									//ERROR, DEGREES/SEC, Will be changed to RPM eventually. 
+        e = r - xb2; 									        //ERROR, DEGREES/SEC, Will be changed to RPM eventually. 
   
-        ITerm += (vKi * e);								//ADD TO RUNNING INTEGRAL ERROR TERM
+        ITerm += (vKi * e);								    //ADD TO RUNNING INTEGRAL ERROR TERM
 		
         if (ITerm > 200) ITerm = 200;					//CURRENT LIMIT SAFETY 
         else if (ITerm < -200) ITerm = -200;
 
-        u = ((vKp * e) + ITerm - (vKd * (xb1 - xb1_1))); 	//SUM PID CONTROL EFFORTS 
+        u = ((vKp * e) + ITerm - (vKd * (xb1 - xhat1))); 	//SUM PID CONTROL EFFORTS 
 
         break;
 

@@ -30,7 +30,7 @@ volatile float e_3 = 0.0;
 volatile float xhat1 = 0.0;   //Position prediction
 volatile float xhat2 = 0.0;   //Velocity prediction
 volatile float xhat1_1 = 0.0;   
-volatile float xhat2_1 = r; 
+volatile float xhat2_1 = 0.0; 
 
 //State Best Guess
 volatile float xb1 = 0.0;
@@ -66,16 +66,16 @@ volatile float K21 = 0.0;
 volatile float K22 = 0.0; 
 
 //Process Error Term 
-volatile float Q11 = 0.1;		
+volatile float Q11 = 0.01;		
 volatile float Q12 = 0.0;		
 volatile float Q21 = 0.0;		
-volatile float Q22 = 0.1;
+volatile float Q22 = 0.01;
 		
 //Observation Error Term
-volatile float R11 = 0.1;		
+volatile float R11 = 0.01;		
 volatile float R12 = 0.0;		
 volatile float R21 = 0.0;		
-volatile float R22 = 0.1;		
+volatile float R22 = 0.01;		
 
 
 volatile long counter = 0;
