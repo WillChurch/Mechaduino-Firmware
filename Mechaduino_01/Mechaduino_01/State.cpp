@@ -54,10 +54,10 @@ volatile float P21_1 = 0.0;
 volatile float P22_1 = 0.0;
 
 //Best Guess Uncertainty
-volatile float Pb11 = 0.0;
+volatile float Pb11 = 0.00001;
 volatile float Pb12 = 0.0;
 volatile float Pb21 = 0.0;
-volatile float Pb22 = 0.0;
+volatile float Pb22 = 0.00001;
 
 //Kalman Gain
 volatile float K11 = 0.0; 
@@ -66,16 +66,16 @@ volatile float K21 = 0.0;
 volatile float K22 = 0.0; 
 
 //Process Error Term 
-volatile float Q11 = 0.01;		
+volatile float Q11 = 0.00001;		
 volatile float Q12 = 0.0;		
 volatile float Q21 = 0.0;		
-volatile float Q22 = 0.01;
+volatile float Q22 = 0.00001;
 		
 //Observation Error Term
-volatile float R11 = 0.01;		
+volatile float R11 = 0.00001;		
 volatile float R12 = 0.0;		
 volatile float R21 = 0.0;		
-volatile float R22 = 0.01;		
+volatile float R22 = 0.00001;		
 
 
 volatile long counter = 0;

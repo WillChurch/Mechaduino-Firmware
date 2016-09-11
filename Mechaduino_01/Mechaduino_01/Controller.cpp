@@ -104,7 +104,7 @@ void TC5_Handler()
   
         ITerm += (vKi * e);								    //ADD TO RUNNING INTEGRAL ERROR TERM
 		
-        if (ITerm > 200) ITerm = 200;					//CURRENT LIMIT SAFETY 
+        if (ITerm > 200) ITerm = 200;						//CURRENT LIMIT SAFETY 
         else if (ITerm < -200) ITerm = -200;
 
         u = ((vKp * e) + ITerm - (vKd * (xb1 - xhat1))); 	//SUM PID CONTROL EFFORTS 
