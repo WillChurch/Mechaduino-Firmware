@@ -61,16 +61,16 @@ volatile float K21 = 0.0;
 volatile float K22 = 0.0; 
 
 //Process Error Term 
-volatile float Q11 = 0.02;    
+volatile float Q11 = 0.0;    
 volatile float Q12 = 0.0;   
 volatile float Q21 = 0.0;   
-volatile float Q22 = 0.02;    
+volatile float Q22 = 0.0;    
 		
 //Observation Error Term
-volatile float R11 = 0.5;		
+volatile float R11 = 0.1;		
 volatile float R12 = 0.0;		
 volatile float R21 = 0.0;		
-volatile float R22 = 0.5;		
+volatile float R22 = 0.1;		
 
 
 volatile long counter = 0;

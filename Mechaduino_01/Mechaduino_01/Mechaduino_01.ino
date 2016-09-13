@@ -1,7 +1,7 @@
 
 /*
 
-  Mechaduino 0.1 Firmware  --Kalman Filter Velocity Loop Branch
+  MechaMduino 0.1 Firmware  --Kalman Filter Velocity Loop Branch
     
   SAM21D18 (Arduino Zero compatible), AS5047 encoder, A4954 driver
 
