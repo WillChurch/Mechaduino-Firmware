@@ -57,6 +57,8 @@ void TC5_Handler()
         else if (ITerm < -150) ITerm = -150;
 
         u = ((pKp * e) + ITerm - (pKd * (yw - yw_1))); //ARDUINO library style
+        SerialUSB.println(u);
+        SerialUSB.println("");
         //u = u+lookup_force(a)-20;
         //   u = u_1 + cA*e + cB*e_1 + cC*e_2;     //ppt linked in octave script
 
@@ -71,9 +73,7 @@ void TC5_Handler()
     		xhat2 = ((F21 * xb1) + ( F22 * xb2));
        
         SerialUSB.println(yw);
-        SerialUSB.println(xhat1);
         SerialUSB.println(vw);
-    		SerialUSB.println(xhat2);
        
     		//P = F * P_1 * F^T + Q ; Calculate Covariance of Prediction (Error)
     		P11 = (F11*((F11*Pb11)+(F12*Pb21)) + F12*((F11*Pb12)+(F12*Pb22))) + Q11; 
@@ -87,14 +87,15 @@ void TC5_Handler()
     		K21 = (P21*(P22+R22)-P22*(P21+R21))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
     		K22 = (P22*(P11+R11)-P21*(P12+R12))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
 			
-    		SerialUSB.println(P11);
-        SerialUSB.println(P12);
-        SerialUSB.println(P21);
-        SerialUSB.println(P22);        
+    	  SerialUSB.println(K11);
+        SerialUSB.println(K12);
+        SerialUSB.println(K21);
+        SerialUSB.println(K22);        
                       
     		//xb = xhat + K * (y - xhat) ; Combine prediction and measurement for best guess. 
     		xb1 = xhat1 + (K11*(yw - xhat1) + K12*(vw - xhat2));
     		xb2 = xhat2 + (K21*(yw - xhat1) + K22*(vw - xhat2));
+        
         SerialUSB.println(xb1);
         SerialUSB.println(xb2);
     		
