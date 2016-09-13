@@ -76,16 +76,17 @@ void TC5_Handler()
     		SerialUSB.println(xhat2);
        
     		//P = F * P_1 * F^T + Q ; Calculate Covariance of Prediction (Error)
-    		P11 = F11*((F11*Pb11)+(F12*Pb21)) + F12*((F11*Pb12)+(F12*Pb22)) + Q11; 
-    		P12 = F21*((F11*Pb11)+(F12*Pb21)) + F22*((F11*Pb12)+(F12*Pb22)) + Q12; 
-    		P21 = F11*((F21*Pb11)+(F22*Pb21)) + F12*((F21*Pb12)+(F22*Pb22)) + Q21;
-    		P22 = F21*((F21*Pb11)+(F22*Pb21)) + F22*((F21*Pb12)+(F22*Pb22)) + Q22; 
+    		P11 = (F11*((F11*Pb11)+(F12*Pb21)) + F12*((F11*Pb12)+(F12*Pb22))) + Q11; 
+    		P12 = (F21*((F11*Pb11)+(F12*Pb21)) + F22*((F11*Pb12)+(F12*Pb22))) + Q12; 
+    		P21 = (F11*((F21*Pb11)+(F22*Pb21)) + F12*((F21*Pb12)+(F22*Pb22))) + Q21;
+    		P22 = (F21*((F21*Pb11)+(F22*Pb21)) + F22*((F21*Pb12)+(F22*Pb22))) + Q22; 
     		
     		//K = P * (P + R)^-1 ; Calculate Kalman Gains 
     		K11 = (P11*(P22+R22)-P12*(P21+R21))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12))); 
     		K12 = (P12*(P11+R11)-P11*(P12+R12))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
     		K21 = (P21*(P22+R22)-P22*(P21+R21))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
     		K22 = (P22*(P11+R11)-P21*(P12+R12))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
+			
     		SerialUSB.println(P11);
         SerialUSB.println(P12);
         SerialUSB.println(P21);
@@ -98,10 +99,10 @@ void TC5_Handler()
         SerialUSB.println(xb2);
     		
     		//Pb = P - K * P ; Calculate Covariance of Best Guess (Error)
-    		Pb11 = P11 + (K11*P11 + K12*P21);
-    		Pb12 = P12 + (K11*P12 + K12*P22);
-    		Pb21 = P21 + (K21*P11 + K22*P21);
-    		Pb22 = P22 + (K21*P12 + K22*P22);
+    		Pb11 = P11 - (K11*P11 + K12*P21);
+    		Pb12 = P12 - (K11*P12 + K12*P22);
+    		Pb21 = P21 - (K21*P11 + K22*P21);
+    		Pb22 = P22 - (K21*P12 + K22*P22);
 
         e = r - xb2; 									        //ERROR, DEGREES/SEC, Will be changed to RPM eventually. 
   

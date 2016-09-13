@@ -55,10 +55,10 @@ volatile float Pb21 = 0.0;
 volatile float Pb22 = 1.0; 
 
 //Kalman Gain
-volatile float K11 = 0.5; 
-volatile float K12 = 0.5; 
-volatile float K21 = 0.5;  
-volatile float K22 = 0.5; 
+volatile float K11 = 0.0; 
+volatile float K12 = 0.0; 
+volatile float K21 = 0.0;  
+volatile float K22 = 0.0; 
 
 //Process Error Term 
 volatile float Q11 = 0.02;    
