@@ -29,12 +29,12 @@ volatile float e_3 = 0.0;
 //Kalman Parameters//
 
 //Predicted State
-volatile float xhat1 = 1.0;   //Position prediction
-volatile float xhat2 = 1.0;   //Velocity prediction
+volatile float xhat1 = 200.0;   	//Position prediction
+volatile float xhat2 = 200.0;   	//Velocity prediction
 
 //State Best Guess
-volatile float xb1 = 1.0;
-volatile float xb2 = 1.0;
+volatile float xb1 = 200.0;
+volatile float xb2 = 200.0;
 
 //Prediction Matrix 
 volatile float F11 = 1.0; 
@@ -43,16 +43,16 @@ volatile float F21 = 0.0;
 volatile float F22 = 1.0; 
 
 //Prediction Uncertainty
-volatile float P11 = 0.5; 
-volatile float P12 = 0.5; 
-volatile float P21 = 0.5; 
-volatile float P22 = 0.5; 
+volatile float P11 = 1.0; 
+volatile float P12 = 0.0; 
+volatile float P21 = 0.0; 
+volatile float P22 = 1.0; 
 
 //Best Guess Uncertainty
-volatile float Pb11 = 0.5;
-volatile float Pb12 = 0.5;
-volatile float Pb21 = 0.5;
-volatile float Pb22 = 0.5;
+volatile float Pb11 = 1.0; 
+volatile float Pb12 = 0.0; 
+volatile float Pb21 = 0.0; 
+volatile float Pb22 = 1.0; 
 
 //Kalman Gain
 volatile float K11 = 0.5; 
@@ -61,16 +61,16 @@ volatile float K21 = 0.5;
 volatile float K22 = 0.5; 
 
 //Process Error Term 
-volatile float Q11 = 0.5;		
-volatile float Q12 = 0.5;		
-volatile float Q21 = 0.5;		
-volatile float Q22 = 0.5;
+volatile float Q11 = 0.02;    
+volatile float Q12 = 0.0;   
+volatile float Q21 = 0.0;   
+volatile float Q22 = 0.02;    
 		
 //Observation Error Term
-volatile float R11 = 0.5;		
-volatile float R12 = 0.5;		
-volatile float R21 = 0.5;		
-volatile float R22 = 0.5;		
+volatile float R11 = 0.02;		
+volatile float R12 = 0.0;		
+volatile float R21 = 0.0;		
+volatile float R22 = 0.02;		
 
 
 volatile long counter = 0;

@@ -86,11 +86,16 @@ void TC5_Handler()
     		K12 = (P12*(P11+R11)-P11*(P12+R12))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
     		K21 = (P21*(P22+R22)-P22*(P21+R21))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
     		K22 = (P22*(P11+R11)-P21*(P12+R12))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
-    		//SerialUSB.println(K22);
-       
+    		SerialUSB.println(P11);
+        SerialUSB.println(P12);
+        SerialUSB.println(P21);
+        SerialUSB.println(P22);        
+                      
     		//xb = xhat + K * (y - xhat) ; Combine prediction and measurement for best guess. 
     		xb1 = xhat1 + (K11*(yw - xhat1) + K12*(vw - xhat2));
     		xb2 = xhat2 + (K21*(yw - xhat1) + K22*(vw - xhat2));
+        SerialUSB.println(xb1);
+        SerialUSB.println(xb2);
     		
     		//Pb = P - K * P ; Calculate Covariance of Best Guess (Error)
     		Pb11 = P11 + (K11*P11 + K12*P21);

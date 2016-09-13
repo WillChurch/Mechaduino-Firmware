@@ -31,12 +31,12 @@ extern volatile float e_3;
 //Kalman Parameters//
 
 //Predicted State
-extern volatile float xhat1;   //Position prediction
-extern volatile float xhat2;   //Velocity prediction
+extern volatile float xhat1;   	//Position prediction
+extern volatile float xhat2;   	//Velocity prediction
 
 //State Best Guess
-extern volatile float xb1;
-extern volatile float xb2;
+extern volatile float xb1;		//Position best guess
+extern volatile float xb2;		//Velocity best guess 
 
 //Prediction Matrix 
 extern volatile float F11; 
