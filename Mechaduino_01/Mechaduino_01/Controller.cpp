@@ -45,6 +45,7 @@ void TC5_Handler()
     //y_1 = y;  pushed lower
 
     yw = (y + (360.0 * wrap_count));
+    
     vw = (yw-yw_1)/Ts ; 
 		
 		//xhat = F * xhat_1 ; Calculate prediction
@@ -76,30 +77,33 @@ void TC5_Handler()
     switch (mode) {
 
       case 'x':
-        e = (r - xb1);
-
-        ITerm += (pKi * e);
+        e = (r - xb1);		//Kalman Filter 
+		//e = (r - yw);		//Standard 
+        
+		ITerm += (pKi * e);
         if (ITerm > 150) ITerm = 150;
         else if (ITerm < -150) ITerm = -150;
 
-        u = ((pKp * e) + ITerm - (pKd * (xb1 - xb1_1))); //ARDUINO library style
+        u = ((pKp * e) + ITerm - (pKd * (xb1 - xb1_1))); //Kalman Filter
+		//u = ((pKp * e) + ITerm - (pKd * (yw - yw_1))); //Standard 
+        
 
-        //u = u+lookup_force(a)-20;
+		//u = u+lookup_force(a)-20;
         //   u = u_1 + cA*e + cB*e_1 + cC*e_2;     //ppt linked in octave script
-
         //  u = 20*e;//
 
         break;
 
       case 'v':
-
-        e = r - xb2; 									        //ERROR, DEGREES/SEC, Will be changed to RPM eventually. 
-  
+		//e = (r - ((yw - yw_1) * 500));					//Standard, degrees per Tc to rpm 
+        e = r - xb2; 									    //ERROR, DEGREES/SEC, Will be changed to RPM eventually. 
+		
         ITerm += (vKi * e);								    //ADD TO RUNNING INTEGRAL ERROR TERM
 		
         if (ITerm > 200) ITerm = 200;					
         else if (ITerm < -200) ITerm = -200;
-
+		
+		//u = ((vKp * e) + ITerm - (vKd * (yw - yw_1)));	//Standard 
         u = ((vKp * e) + ITerm - (vKd * (xb1 - xb1_1))); 	//SUM PID CONTROL EFFORTS 
         
 
@@ -172,8 +176,8 @@ void TC5_Handler()
     yw_1 = yw;
     y_1 = y;
     vw_1 = vw;
-	  xb1_1 = xb1;
-	  xb2_1 = xb2;
+	xb1_1 = xb1;
+	xb2_1 = xb2;
 
 
     TC5->COUNT16.INTFLAG.bit.OVF = 1;    // writing a one clears the flag ovf flag

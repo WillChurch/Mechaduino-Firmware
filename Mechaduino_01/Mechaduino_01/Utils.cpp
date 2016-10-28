@@ -342,6 +342,7 @@ void serialCheck() {
         break;
 
       case 't':
+		SerialUSB.println("Torque Mode Enabled");
         mode = 't';           //torque loop
         break;
 
