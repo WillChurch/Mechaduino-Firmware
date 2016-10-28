@@ -37,6 +37,8 @@ extern volatile float xhat2;   	//Velocity prediction
 //State Best Guess
 extern volatile float xb1;		//Position best guess
 extern volatile float xb2;		//Velocity best guess 
+extern volatile float xb1_1;
+extern volatile float xb2_1;
 
 //Prediction Matrix 
 extern volatile float F11; 

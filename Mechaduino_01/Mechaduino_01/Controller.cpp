@@ -46,20 +46,44 @@ void TC5_Handler()
 
     yw = (y + (360.0 * wrap_count));
     vw = (yw-yw_1)/Ts ; 
+		
+		//xhat = F * xhat_1 ; Calculate prediction
+    xhat1 = ((F11 * xb1) + ( F12 * xb2));
+    xhat2 = ((F21 * xb1) + ( F22 * xb2));
+	
+	  //P = F * P_1 * F^T + Q ; Calculate Covariance of Prediction (Error)
+    P11 = (F11*((F11*Pb11)+(F12*Pb21)) + F12*((F11*Pb12)+(F12*Pb22))) + Q11; 
+    P12 = (F21*((F11*Pb11)+(F12*Pb21)) + F22*((F11*Pb12)+(F12*Pb22))) + Q12; 
+    P21 = (F11*((F21*Pb11)+(F22*Pb21)) + F12*((F21*Pb12)+(F22*Pb22))) + Q21;
+    P22 = (F21*((F21*Pb11)+(F22*Pb21)) + F22*((F21*Pb12)+(F22*Pb22))) + Q22; 
 
+	  //K = P * (P + R)^-1 ; Calculate Kalman Gains 
+	  K11 = (P11*(P22+R22)-P12*(P21+R21))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12))); 
+	  K12 = (P12*(P11+R11)-P11*(P12+R12))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
+	  K21 = (P21*(P22+R22)-P22*(P21+R21))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
+	  K22 = (P22*(P11+R11)-P21*(P12+R12))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
+	
+    //xb = xhat + K * (y - xhat) ; Combine prediction and measurement for best guess. 
+   	xb1 = xhat1 + (K11*(yw - xhat1) + K12*(vw - xhat2));
+    xb2 = xhat2 + (K21*(yw - xhat1) + K22*(vw - xhat2));
+    
+    //Pb = P - K * P ; Calculate Covariance of Best Guess (Error)
+    Pb11 = P11 - (K11*P11 + K12*P21);
+    Pb12 = P12 - (K11*P12 + K12*P22);
+    Pb21 = P21 - (K21*P11 + K22*P21);
+    Pb22 = P22 - (K21*P12 + K22*P22);    
+	
     switch (mode) {
 
       case 'x':
-        e = (r - yw);
+        e = (r - xb1);
 
         ITerm += (pKi * e);
         if (ITerm > 150) ITerm = 150;
         else if (ITerm < -150) ITerm = -150;
 
-        u = ((pKp * e) + ITerm - (pKd * (yw - yw_1))); //ARDUINO library style
-//        SerialUSB.println(yw);
-//        SerialUSB.println(u);
-//        SerialUSB.println("");
+        u = ((pKp * e) + ITerm - (pKd * (xb1 - xb1_1))); //ARDUINO library style
+
         //u = u+lookup_force(a)-20;
         //   u = u_1 + cA*e + cB*e_1 + cC*e_2;     //ppt linked in octave script
 
@@ -68,43 +92,6 @@ void TC5_Handler()
         break;
 
       case 'v':
-//        SerialUSB.println("");    
-    		//xhat = F * xhat_1 ; Calculate prediction
-    		xhat1 = ((F11 * xb1) + ( F12 * xb2));
-    		xhat2 = ((F21 * xb1) + ( F22 * xb2));
-       
-//        SerialUSB.println(yw);
-//        SerialUSB.println(vw);
-       
-    		//P = F * P_1 * F^T + Q ; Calculate Covariance of Prediction (Error)
-    		P11 = (F11*((F11*Pb11)+(F12*Pb21)) + F12*((F11*Pb12)+(F12*Pb22))) + Q11; 
-    		P12 = (F21*((F11*Pb11)+(F12*Pb21)) + F22*((F11*Pb12)+(F12*Pb22))) + Q12; 
-    		P21 = (F11*((F21*Pb11)+(F22*Pb21)) + F12*((F21*Pb12)+(F22*Pb22))) + Q21;
-    		P22 = (F21*((F21*Pb11)+(F22*Pb21)) + F22*((F21*Pb12)+(F22*Pb22))) + Q22; 
-    		
-    		//K = P * (P + R)^-1 ; Calculate Kalman Gains 
-    		K11 = (P11*(P22+R22)-P12*(P21+R21))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12))); 
-    		K12 = (P12*(P11+R11)-P11*(P12+R12))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
-    		K21 = (P21*(P22+R22)-P22*(P21+R21))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
-    		K22 = (P22*(P11+R11)-P21*(P12+R12))/(((P22+R22)*(P11+R11)) - ((P21+R21)*(P12+R12)));
-			
-//    	  SerialUSB.println(K11);
-//        SerialUSB.println(K12);
-//        SerialUSB.println(K21);
-//        SerialUSB.println(K22);        
-                      
-    		//xb = xhat + K * (y - xhat) ; Combine prediction and measurement for best guess. 
-    		xb1 = xhat1 + (K11*(yw - xhat1) + K12*(vw - xhat2));
-    		xb2 = xhat2 + (K21*(yw - xhat1) + K22*(vw - xhat2));
-        
-//        SerialUSB.println(xb1);
-//        SerialUSB.println(xb2);
-    		
-    		//Pb = P - K * P ; Calculate Covariance of Best Guess (Error)
-    		Pb11 = P11 - (K11*P11 + K12*P21);
-    		Pb12 = P12 - (K11*P12 + K12*P22);
-    		Pb21 = P21 - (K21*P11 + K22*P21);
-    		Pb22 = P22 - (K21*P12 + K22*P22);
 
         e = r - xb2; 									        //ERROR, DEGREES/SEC, Will be changed to RPM eventually. 
   
@@ -113,9 +100,9 @@ void TC5_Handler()
         if (ITerm > 200) ITerm = 200;					
         else if (ITerm < -200) ITerm = -200;
 
-        u = ((vKp * e) + ITerm - (vKd * (xb1 - xhat1))); 	//SUM PID CONTROL EFFORTS 
+        u = ((vKp * e) + ITerm - (vKd * (xb1 - xb1_1))); 	//SUM PID CONTROL EFFORTS 
         
-//        SerialUSB.println(u);
+
         break;
 
       case 't':
@@ -176,7 +163,7 @@ void TC5_Handler()
 	
 	
 	//END OF LOOP, SHIFT PARAMETERS BACK ONE TIMESTEP
-	  e_3 = e_2;
+	e_3 = e_2;
     e_2 = e_1;
     e_1 = e;
     u_3 = u_2;
@@ -185,6 +172,8 @@ void TC5_Handler()
     yw_1 = yw;
     y_1 = y;
     vw_1 = vw;
+	  xb1_1 = xb1;
+	  xb2_1 = xb2;
 
 
     TC5->COUNT16.INTFLAG.bit.OVF = 1;    // writing a one clears the flag ovf flag
