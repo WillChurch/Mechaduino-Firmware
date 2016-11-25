@@ -1,10 +1,10 @@
-  
-/*
 
-  Mechaduino 0.1 Firmware  --multi file branch
-    
+/*
+  -------------------------------------------------------------
+  Mechaduino 0.1 Firmware  v0.1.1
   SAM21D18 (Arduino Zero compatible), AS5047 encoder, A4954 driver
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   Controlled via a SerialUSB terminal at 115200 baud.
 
@@ -152,11 +152,20 @@ https://creativecommons.org/licenses/by-sa/4.0/
   
 
   
+=======
+  All Mechaduino related materials are released under the
+  Creative Commons Attribution Share-Alike 4.0 License
+  https://creativecommons.org/licenses/by-sa/4.0/
+
+  Many thanks to Will Church, Marco Farrugia, and Kai Wolter.
+  --------------------------------------------------------------
+>>>>>>> refs/remotes/origin/development2
   
   Controlled via a SerialUSB terminal at 115200 baud.
 
   Implemented serial commands are:
 
+<<<<<<< HEAD
 //const float Kp = 10.0;//19.75;
 //
 //const float Ki = 1.0;//1250;
@@ -233,16 +242,26 @@ const PROGMEM float sine_lookup[] = {
 >>>>>>> refs/remotes/jcchurch13/multi-file
 
   x  - position mode
+=======
+ s  -  step
+ d  -  dir
+ p  -  print angle [step count] , [assumed angle] , [encoder reading]
 
-  v  -  velocity mode
+ c  -  calibration routine
+ e  -  check encoder diagnositics
+ q  -  parameter query
+>>>>>>> refs/remotes/origin/development2
 
-  t  -  torque mode
+ x  -  position mode
+ v  -  velocity mode
+ x  -  torque mode
 
-  q  - parameter query (prints current parameters)
+ y  -  enable control loop
+ n  -  disable control loop
+ r  -  enter new setpoint
 
-  e  -  reads encoder diagnostic register 
-
-  p  -  print [step count] , [assumed angle] , [encoder reading]
+ k  -  edit controller gains
+ m  -  print main menu
 
   ...see serialCheck() in Utils for more details
 
@@ -260,14 +279,21 @@ const PROGMEM float sine_lookup[] = {
 
 
 void setup() {
-
-
-  setupPins();
-  setupSPI();
+  digitalWrite(13,HIGH);
+  setupPins();  
   setupTCInterrupts();
-
+  sineGen();
+  
+  
   SerialUSB.begin(115200);
+  delay(3000);              //This delay seems to make it easier to establish a conncetion when the Mechaduino is configured to start in closed loop mode.
+  serialMenu();
+  setupSPI();
+  digitalWrite(13,LOW);
+  
+  pinMode(3, OUTPUT);
 
+<<<<<<< HEAD
   // while (!SerialUSB) {};     //wait for serial
 
 <<<<<<< HEAD
@@ -285,13 +311,10 @@ void setup() {
 
 
    // enableTCInterrupts();     //start in closed loop mode
+=======
+  //  enableTCInterrupts();     //start in closed loop mode
+>>>>>>> refs/remotes/origin/development2
   //  mode = 'x';
-  //
-  //  Wire.begin(4);                // join i2c bus with address #8
-  //  Wire.onReceive(receiveEvent); // register event
-
-
-  SerialUSB.println("Mechaduino 0.1 begin...");
 
 }
 
@@ -303,10 +326,18 @@ void setup() {
 
 void loop()
 {
+<<<<<<< HEAD
+=======
   
   serialCheck();
   //r=0.1125*step_count;
+>>>>>>> refs/remotes/jcchurch13/multi-file
 
+  serialCheck();
+
+  //r=0.1125*step_count; --- no longer need this adjust step angle in parameters.cpp
+
+<<<<<<< HEAD
 <<<<<<< HEAD
  // r=0.1125*step_count;
 
@@ -1969,4 +2000,8 @@ void antiCoggingCal() {
 =======
 >>>>>>> refs/remotes/jcchurch13/multi-file
 }
+=======
+>>>>>>> refs/remotes/origin/development2
 
+
+}
