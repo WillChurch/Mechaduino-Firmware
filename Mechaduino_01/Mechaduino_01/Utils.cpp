@@ -78,6 +78,7 @@ void output(float theta, int effort) {
 
   //REG_PORT_OUTCLR0 = PORT_PA09; for debugging/timing
 
+<<<<<<< HEAD
   angle_1 = mod((phase_multiplier * theta) , 3600);
   angle_2 = mod((phase_multiplier * theta)+900 , 3600);
   
@@ -85,6 +86,10 @@ void output(float theta, int effort) {
   if (sin_coil_A > 1024) {
     sin_coil_A = sin_coil_A - 65536;
   }
+=======
+  floatangle = (10000 * ( theta * angle_multiplier + 2.3562) );//0.7854) );// 2.3562) );       //changed to 2.3 for NEMA23,NEMA17 dual..... opposite below
+  //floatangle = (10000 * ( theta * 0.87266 + 0.7854) );
+>>>>>>> refs/remotes/jcchurch13/multi-file
 
   sin_coil_B = sin_1[angle_2];
   if (sin_coil_B > 1024) {
@@ -106,9 +111,31 @@ void output(float theta, int effort) {
     REG_PORT_OUTSET0 = PORT_PA06;     //write IN_1 HIGH
   }
 
+<<<<<<< HEAD
   if (v_coil_B >= 0)  {
     REG_PORT_OUTSET0 = PORT_PA20;     //write IN_4 HIGH
     REG_PORT_OUTCLR0 = PORT_PA15;     //write IN_3 LOW
+=======
+
+
+
+
+  floatangle = (10000 * (  theta * angle_multiplier + 0.7854) );//2.3562) );//0.7854) );
+  //floatangle = (10000 * ( theta * 0.87266 + 2.3562) );
+
+  intangle = (int)floatangle;
+  // modangle = (((intangle % 628) + 628) % 628);
+  val2 = effort * lookup_sine(intangle);
+
+  analogFastWrite(VREF_1, abs(val2));
+
+  if (val2 >= 0)  {
+    digitalWrite(IN_2, HIGH);
+    //     PORTB |= (B00000100);
+    digitalWrite(IN_1, LOW);
+    //     PORTB &= ~(B00001000);
+
+>>>>>>> refs/remotes/jcchurch13/multi-file
   }
   else  {
     REG_PORT_OUTCLR0 = PORT_PA20;     //write IN_4 LOW
@@ -458,6 +485,14 @@ void oneStep() {           /////////////////////////////////   oneStep    //////
   else {
     stepNumber -= 1;
   }
+<<<<<<< HEAD
+=======
+  // step_state = ((((stepNumber) % 4) + 4) % 4); // arduino mod does not wrap for negative....
+
+  //output(1.8 * step_state, 128); //1.8 = 90/50
+
+  output(aps * stepNumber, 50); //1.8 = 90/50
+>>>>>>> refs/remotes/jcchurch13/multi-file
 
   //output(1.8 * stepNumber, 64); //updata 1.8 to aps..., second number is control effort
   output(aps * stepNumber, (int)(0.33 * uMAX));
@@ -919,10 +954,29 @@ void hybridControl() {        //still under development
   static float iLevel = 0.6;  //hybrid stepping current level.  In this mode, this current is continuous (unlike closed loop mode). Be very careful raising this value as you risk overheating the A4954 driver!
   static float rSense = 0.15;
 
+<<<<<<< HEAD
   if (yw < r - aps) {
     missed_steps -= 1;
   }
   else if (yw > r + aps) {
+=======
+  a = readEncoder();
+  y = lookup_angle(a);
+  if ((y - y_1) < -180.0) {
+    wrap_count += 1;
+  }
+  else if ((y - y_1) > 180.0) {
+    wrap_count -= 1;
+  }
+  y_1 = y; 
+
+  yw = (y + (360.0 * wrap_count));
+  
+  if (yw < 0.1125*step_count-aps) {
+    missed_steps -= 1;
+  }
+  else if (yw > 0.1125*step_count+aps) {
+>>>>>>> refs/remotes/jcchurch13/multi-file
     missed_steps += 1;
   }
 

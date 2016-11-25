@@ -77,6 +77,12 @@ void setup() {
 
 void loop()
 {
+<<<<<<< HEAD
+=======
+  
+  serialCheck();
+  //r=0.1125*step_count;
+>>>>>>> refs/remotes/jcchurch13/multi-file
 
   serialCheck();
 
