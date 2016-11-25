@@ -21,28 +21,28 @@ extern volatile float vKd;
 //////////////////////////////////////
 //////////////////PINS////////////////
 //////////////////////////////////////
-extern int IN_4;
-extern int IN_3;
-extern int VREF_2;
-extern int VREF_1;
-extern int IN_2;
-extern int IN_1;
-extern int pulse;
+extern const int IN_4;
+extern const int IN_3;
+extern const int VREF_2;
+extern const int VREF_1;
+extern const int IN_2;
+extern const int IN_1;
+extern const int pulse;
 extern const int ledPin;
 extern const int chipSelectPin;
 
-extern int step_pin;
-extern int dir_pin;
+extern const int step_pin;
+extern const int dir_pin;
 
-//pins for debugging waveforms:
-//extern int sine_out;				
-//extern int encoder_out;
-
+extern const float stepangle;
 
 extern const int spr; //  200 steps per revolution
 extern const float aps; // angle per step
 extern int cpr; //counts per rev
+<<<<<<< HEAD
+=======
 extern const float angle_multiplier;
+>>>>>>> refs/remotes/jcchurch13/multi-file
 
 extern int dir;		//initialize stepping mode variables
 extern int step_state;
@@ -57,13 +57,16 @@ extern int a;  // raw encoder value in closed loop and print_angle routine (shou
 
 extern volatile long step_count;  //For step/dir interrupt
 
-extern volatile int interrupted;
+//extern volatile int interrupted;
 
 extern int stepNumber; // step index for cal routine
 
 
-extern const PROGMEM float sine_lookup[];
 extern const PROGMEM float lookup[];
 extern const PROGMEM float force_lookup[];
 
+extern  int sin_1[3600];
+
+
 #endif
+
